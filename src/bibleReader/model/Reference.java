@@ -74,6 +74,7 @@ public class Reference implements Comparable<Reference> {
 //			}
 //		}
 //	}
+	
 	@Override
 	public int compareTo(Reference otherRef) {
 		int diffBook = book.compareTo(otherRef.book);

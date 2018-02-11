@@ -105,7 +105,8 @@ public interface Bible {
 
 	/**
 	 * @param references
-	 *            a ReferenceList of references for which verses are being requested
+	 *            a ReferenceList of references for which verses are being
+	 *            requested
 	 * @return a VerseList with each element being the Verse with that Reference
 	 *         from this Bible, or null if the particular Reference does not
 	 *         occur in this Bible. Thus, the size of the returned list will be
