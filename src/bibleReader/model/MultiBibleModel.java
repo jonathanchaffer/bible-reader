@@ -131,13 +131,6 @@ public interface MultiBibleModel {
 
 	// TODO Create Javadoc comments for me. See the similar methods that are already commented for details about what
 	// this method should do.
-	/**
-	 * 
-	 * @param book
-	 * @param chapter1
-	 * @param chapter2
-	 * @return
-	 */
 	public ReferenceList getChapterReferences(BookOfBible book, int chapter1, int chapter2);
 
 	/**
