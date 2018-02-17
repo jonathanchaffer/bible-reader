@@ -1,13 +1,22 @@
 package bibleReader;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import bibleReader.model.ArrayListBible;
 import bibleReader.model.Bible;
 import bibleReader.model.BibleReaderModel;
-import bibleReader.model.TreeMapBible;
 import bibleReader.model.VerseList;
 
 /**
@@ -26,9 +35,11 @@ public class BibleReaderApp extends JFrame {
 
 	// Fields
 	private BibleReaderModel	model;
+	private JFrame				mainFrame;
 	private ResultView			resultView;
-
-	// TODO add more fields as necessary
+	private JTextField			inputField;
+	private JButton				searchButton;
+	private JButton				passageButton;
 
 	/**
 	 * Default constructor. We may want to replace this with a different one.
@@ -45,7 +56,30 @@ public class BibleReaderApp extends JFrame {
 		
 		model.addBible(kjv);
 
+		setTitle("Bible Reader");
+		
 		resultView = new ResultView(model);
+		inputField = new JTextField("", 20);
+		searchButton = new JButton("Search");
+		passageButton = new JButton("Passage");
+		
+		inputField.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				resultView.updateSearch(inputField.getText());
+			}
+		});
+		
+		searchButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				resultView.updateSearch(inputField.getText());
+			}
+		});
+		
+		passageButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				resultView.updatePassage(inputField.getText());
+			}
+		});
 
 		setupGUI();
 		pack();
@@ -60,8 +94,18 @@ public class BibleReaderApp extends JFrame {
 	 * Set up the main GUI. Make sure you don't forget to put resultView somewhere!
 	 */
 	private void setupGUI() {
-		// TODO textfield and button that allow a word search to be performed: Stage 5
-		// TODO Display search results (in the ResulteView): Stage 5
+		Container cont = getContentPane();
+		cont.setLayout(new BorderLayout());
+		
+		JPanel inputAndButtons = new JPanel();
+		inputAndButtons.setLayout(new FlowLayout());
+		cont.add(inputAndButtons, BorderLayout.NORTH);
+		
+		inputAndButtons.add(inputField);
+		inputAndButtons.add(searchButton);
+		inputAndButtons.add(passageButton);
+		
+		cont.add(resultView, BorderLayout.CENTER);
 
 		// The stage numbers below may change, so make sure to pay attention to
 		// what the assignment says.

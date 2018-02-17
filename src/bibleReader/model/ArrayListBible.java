@@ -80,18 +80,6 @@ public class ArrayListBible implements Bible {
 		return getVerse(ref);
 	}
 
-	// ---------------------------------------------------------------------------------------------
-	// The following part of this class should be implemented for stage 4.
-	// See the Bible interface for the documentation of these methods.
-	// Do not over think these methods. All three should be pretty
-	// straightforward to implement.
-	// For Stage 8 (give or take a 1 or 2) you will re-implement them so they
-	// work better.
-	// At that stage you will create another class to facilitate searching and
-	// use it here.
-	// (Essentially these two methods will be delegate methods.)
-	// ---------------------------------------------------------------------------------------------
-
 	/**
 	 * @return a VerseList containing all of the verses from the Bible, in
 	 *         order. The version of the VerseList should be set to the version
@@ -100,7 +88,11 @@ public class ArrayListBible implements Bible {
 	 */
 	@Override
 	public VerseList getAllVerses() {
-		return new VerseList(getVersion(), getTitle());
+		VerseList allVerses = new VerseList(getVersion(), getTitle());
+		for (Verse verse : verses) {
+			allVerses.add(verse);
+		}
+		return allVerses;
 	}
 
 	/**
@@ -171,115 +163,90 @@ public class ArrayListBible implements Bible {
 	 */
 	@Override
 	public VerseList getVerses(ReferenceList references) {
-		VerseList versesToReturn = new VerseList(getVersion(), references.toString());
-		for (Verse verse : verses) {
-			if (references.contains(verse.getReference())) {
-				versesToReturn.add(verse);
-			}
+		VerseList versesToReturn = new VerseList(getVersion(), "Arbitrary list of Verses");
+		for (Reference ref : references) {
+			versesToReturn.add(getVerse(ref));
 		}
 		return versesToReturn;
 	}
-	// ---------------------------------------------------------------------------------------------
-	// The following part of this class should be implemented for Stage 7.
-	//
-	// HINT: Do not reinvent the wheel. Some of these methods can be implemented
-	// by looking up
-	// one or two things and calling another method to do the bulk of the work.
-	// ---------------------------------------------------------------------------------------------
 
 	@Override
 	public int getLastVerseNumber(BookOfBible book, int chapter) {
-		// TODO Implement me: Stage 7
 		return -1;
 	}
 
 	@Override
 	public int getLastChapterNumber(BookOfBible book) {
-		// TODO Implement me: Stage 7
 		return -1;
 	}
 
 	@Override
 	public ReferenceList getReferencesInclusive(Reference firstVerse, Reference lastVerse) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 
 	@Override
 	public ReferenceList getReferencesExclusive(Reference firstVerse, Reference lastVerse) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 
 	@Override
 	public ReferenceList getReferencesForBook(BookOfBible book) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 
 	@Override
 	public ReferenceList getReferencesForChapter(BookOfBible book, int chapter) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 
 	@Override
 	public ReferenceList getReferencesForChapters(BookOfBible book, int chapter1, int chapter2) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 
 	@Override
 	public ReferenceList getReferencesForPassage(BookOfBible book, int chapter, int verse1, int verse2) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 
 	@Override
 	public ReferenceList getReferencesForPassage(BookOfBible book, int chapter1, int verse1, int chapter2, int verse2) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 
 	@Override
 	public VerseList getVersesInclusive(Reference firstVerse, Reference lastVerse) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 
 	@Override
 	public VerseList getVersesExclusive(Reference firstVerse, Reference lastVerse) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 
 	@Override
 	public VerseList getBook(BookOfBible book) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 
 	@Override
 	public VerseList getChapter(BookOfBible book, int chapter) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 
 	@Override
 	public VerseList getChapters(BookOfBible book, int chapter1, int chapter2) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 
 	@Override
 	public VerseList getPassage(BookOfBible book, int chapter, int verse1, int verse2) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 
 	@Override
 	public VerseList getPassage(BookOfBible book, int chapter1, int verse1, int chapter2, int verse2) {
-		// TODO Implement me: Stage 7
 		return null;
 	}
 }

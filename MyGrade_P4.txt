@@ -1,7 +1,10 @@
 My Self-evaluation:
 -----------------------
-Time spent:    __ Hours
+Time spent:    05 Hours
 -----------------------
-Expected Grade: __/100%
+Expected Grade: 100/100%
 -----------------------
 Justification:
+My code is organized and clear. It is well-documented
+and passed all the tests. It is implemented correctly
+and efficiently. Extraneous comments have been removed.

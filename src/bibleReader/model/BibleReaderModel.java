@@ -1,5 +1,6 @@
 package bibleReader.model;
 
+import java.util.ArrayList;
 
 /**
  * The model of the Bible Reader. It stores the Bibles and has methods for searching for verses based on words or
@@ -8,7 +9,7 @@ package bibleReader.model;
  * @author cusack
  */
 public class BibleReaderModel implements MultiBibleModel {
-
+	private ArrayList<Bible> bibles;
 	// ---------------------------------------------------------------------------
 	// TODO Add more fields here: Stage 5
 	// You need to store several Bible objects.
@@ -18,41 +19,56 @@ public class BibleReaderModel implements MultiBibleModel {
 	 * Default constructor. You probably need to instantiate objects and do other assorted things to set up the model.
 	 */
 	public BibleReaderModel() {
-		// TODO implement me: Stage 5
+		bibles = new ArrayList<Bible>();
 	}
 
 	@Override
 	public String[] getVersions() {
-		// TODO implement me: Stage 5
-		return null;
+		String[] versionsToReturn = new String[bibles.size()];
+		for(int i=0; i<bibles.size(); i++) {
+			versionsToReturn[i] = bibles.get(i).getVersion();
+		}
+		return versionsToReturn;
 	}
 
 	@Override
 	public int getNumberOfVersions() {
-		// TODO Implement me: Stage 5
-		return 0;
+		return getVersions().length;
 	}
 
 	@Override
 	public void addBible(Bible bible) {
-		// TODO implement me: Stage 5
+		bibles.add(bible);
 	}
 
 	@Override
 	public Bible getBible(String version) {
-		// TODO implement me: Stage 5
+		for(Bible bible : bibles) {
+			if(bible.getVersion().equals(version)) {
+				return bible;
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public ReferenceList getReferencesContaining(String words) {
-		// TODO Implement me: Stage 5
-		return null;
+		ReferenceList refsToReturn = new ReferenceList();
+		for(Bible bible : bibles) {
+			for(Reference ref : bible.getReferencesContaining(words)) {
+				refsToReturn.add(ref);
+			}
+		}
+		return refsToReturn;
 	}
 	
 	@Override
 	public VerseList getVerses(String version, ReferenceList references) {
-		// TODO Implement me: Stage 5
+		for(Bible bible : bibles) {
+			if(bible.getVersion().equals(version)) {
+				return bible.getVerses(references);
+			}
+		}
 		return null;
 	}
 	//---------------------------------------------------------------------
