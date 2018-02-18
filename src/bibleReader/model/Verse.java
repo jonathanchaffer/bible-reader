@@ -6,14 +6,16 @@ package bibleReader.model;
  * @author Chuck Cusack, Implemented February 2, 2013
  */
 public class Verse implements Comparable<Verse> {
-	private Reference	reference;
-	private String		text;
+	private Reference reference;
+	private String text;
 
 	/**
 	 * Construct a verse given the reference and the text.
 	 * 
-	 * @param r The reference for the verse
-	 * @param t The text of the verse
+	 * @param r
+	 *            The reference for the verse
+	 * @param t
+	 *            The text of the verse
 	 */
 	public Verse(Reference r, String t) {
 		reference = r;
@@ -23,10 +25,14 @@ public class Verse implements Comparable<Verse> {
 	/**
 	 * Construct a verse given the book, chapter, verse, and text.
 	 * 
-	 * @param book The book of the Bible
-	 * @param chapter The chapter number
-	 * @param verse The verse number
-	 * @param text The text of the verse
+	 * @param book
+	 *            The book of the Bible
+	 * @param chapter
+	 *            The chapter number
+	 * @param verse
+	 *            The verse number
+	 * @param text
+	 *            The text of the verse
 	 */
 	public Verse(BookOfBible book, int chapter, int verse, String text) {
 		reference = new Reference(book, chapter, verse);
@@ -52,8 +58,9 @@ public class Verse implements Comparable<Verse> {
 	}
 
 	/**
-	 * Returns a String representation of this Verse, which is a String representation of the Reference followed by a
-	 * space and then the String representation of the text of the verse.
+	 * Returns a String representation of this Verse, which is a String
+	 * representation of the Reference followed by a space and then the String
+	 * representation of the text of the verse.
 	 */
 	@Override
 	public String toString() {
@@ -93,9 +100,11 @@ public class Verse implements Comparable<Verse> {
 	}
 
 	/**
-	 * Return true if and only if this verse the other verse have the same reference. (So the text is ignored).
+	 * Return true if and only if this verse the other verse have the same
+	 * reference. (So the text is ignored).
 	 * 
-	 * @param other the other Verse.
+	 * @param other
+	 *            the other Verse.
 	 * @return true if and only if this verse and the other have the same reference.
 	 */
 	public boolean sameReference(Verse other) {

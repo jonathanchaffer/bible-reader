@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * A list of references. This is just a subclass of ArrayList. It is mostly for convenience. This is done as a subclass
- * rather than a wrapper class so that all of the ArrayList methods are available.
+ * A list of references. This is just a subclass of ArrayList. It is mostly for
+ * convenience. This is done as a subclass rather than a wrapper class so that
+ * all of the ArrayList methods are available.
  * 
  * @author cusack, January 21, 2013
  */

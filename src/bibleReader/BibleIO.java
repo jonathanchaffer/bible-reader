@@ -41,13 +41,13 @@ public class BibleIO {
 	}
 
 	/**
-	 * Read in a Bible that is saved in the "ATV" format. The format is
-	 * described below.
+	 * Read in a Bible that is saved in the "ATV" format. The format is described
+	 * below.
 	 * 
 	 * @param bibleFile
 	 *            The file containing a Bible with .atv extension.
-	 * @return A Bible object constructed from the file bibleFile, or null if
-	 *         there was an error reading the file.
+	 * @return A Bible object constructed from the file bibleFile, or null if there
+	 *         was an error reading the file.
 	 */
 	private static VerseList readATV(File bibleFile) {
 		try {
@@ -119,8 +119,8 @@ public class BibleIO {
 	 * 
 	 * @param bibleFile
 	 *            The file containing a Bible with .xmv extension.
-	 * @return A Bible object constructed from the file bibleFile, or null if
-	 *         there was an error reading the file.
+	 * @return A Bible object constructed from the file bibleFile, or null if there
+	 *         was an error reading the file.
 	 */
 	private static VerseList readXMV(File bibleFile) {
 		return null;
@@ -138,14 +138,14 @@ public class BibleIO {
 	}
 
 	/**
-	 * Write out the given verses in the ATV format, using the description as
-	 * the first line of the file.
+	 * Write out the given verses in the ATV format, using the description as the
+	 * first line of the file.
 	 * 
 	 * @param file
 	 *            The file that the Bible should be written to.
 	 * @param description
-	 *            The contents that will be placed on the first line of the
-	 *            file, formatted appropriately.
+	 *            The contents that will be placed on the first line of the file,
+	 *            formatted appropriately.
 	 * @param verses
 	 *            The verses that will be written to the file.
 	 */
@@ -153,8 +153,8 @@ public class BibleIO {
 	}
 
 	/**
-	 * Write the string out to the given file. It is presumed that the string is
-	 * an HTML rendering of some verses, but really it can be anything.
+	 * Write the string out to the given file. It is presumed that the string is an
+	 * HTML rendering of some verses, but really it can be anything.
 	 * 
 	 * @param file
 	 * @param text

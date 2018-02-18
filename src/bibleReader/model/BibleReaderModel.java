@@ -3,8 +3,8 @@ package bibleReader.model;
 import java.util.ArrayList;
 
 /**
- * The model of the Bible Reader. It stores the Bibles and has methods for searching for verses based on words or
- * references.
+ * The model of the Bible Reader. It stores the Bibles and has methods for
+ * searching for verses based on words or references.
  * 
  * @author cusack
  * @author Jon Chaffer & Jason Gombas
@@ -13,7 +13,8 @@ public class BibleReaderModel implements MultiBibleModel {
 	private ArrayList<Bible> bibles;
 
 	/**
-	 * Default constructor. You probably need to instantiate objects and do other assorted things to set up the model.
+	 * Default constructor. You probably need to instantiate objects and do other
+	 * assorted things to set up the model.
 	 */
 	public BibleReaderModel() {
 		bibles = new ArrayList<Bible>();
@@ -22,7 +23,7 @@ public class BibleReaderModel implements MultiBibleModel {
 	@Override
 	public String[] getVersions() {
 		String[] versionsToReturn = new String[bibles.size()];
-		for(int i=0; i<bibles.size(); i++) {
+		for (int i = 0; i < bibles.size(); i++) {
 			versionsToReturn[i] = bibles.get(i).getVersion();
 		}
 		return versionsToReturn;
@@ -40,8 +41,8 @@ public class BibleReaderModel implements MultiBibleModel {
 
 	@Override
 	public Bible getBible(String version) {
-		for(Bible bible : bibles) {
-			if(bible.getVersion().equals(version)) {
+		for (Bible bible : bibles) {
+			if (bible.getVersion().equals(version)) {
 				return bible;
 			}
 		}
@@ -51,24 +52,24 @@ public class BibleReaderModel implements MultiBibleModel {
 	@Override
 	public ReferenceList getReferencesContaining(String words) {
 		ReferenceList refsToReturn = new ReferenceList();
-		for(Bible bible : bibles) {
-			for(Reference ref : bible.getReferencesContaining(words)) {
+		for (Bible bible : bibles) {
+			for (Reference ref : bible.getReferencesContaining(words)) {
 				refsToReturn.add(ref);
 			}
 		}
 		return refsToReturn;
 	}
-	
+
 	@Override
 	public VerseList getVerses(String version, ReferenceList references) {
-		for(Bible bible : bibles) {
-			if(bible.getVersion().equals(version)) {
+		for (Bible bible : bibles) {
+			if (bible.getVersion().equals(version)) {
 				return bible.getVerses(references);
 			}
 		}
 		return null;
 	}
-	//---------------------------------------------------------------------
+	// ---------------------------------------------------------------------
 
 	@Override
 	public String getText(String version, Reference reference) {
@@ -83,15 +84,18 @@ public class BibleReaderModel implements MultiBibleModel {
 	}
 
 	// -----------------------------------------------------------------------------
-	// The next set of methods are for use by the getReferencesForPassage method above. 
+	// The next set of methods are for use by the getReferencesForPassage method
+	// above.
 	// After it parses the input string it will call one of these.
 	//
 	// These methods should be somewhat easy to implement. They are kind of delegate
 	// methods in that they call a method on the Bible class to do most of the work.
-	// However, they need to do so for every version of the Bible stored in the model.
+	// However, they need to do so for every version of the Bible stored in the
+	// model.
 	// and combine the results.
 	//
-	// Once you implement one of these, the rest of them should be fairly straightforward.
+	// Once you implement one of these, the rest of them should be fairly
+	// straightforward.
 	// Think before you code, get one to work, and then implement the rest based on
 	// that one.
 	// -----------------------------------------------------------------------------
@@ -138,9 +142,9 @@ public class BibleReaderModel implements MultiBibleModel {
 		return null;
 	}
 
-	//------------------------------------------------------------------
+	// ------------------------------------------------------------------
 	// These are the better searching methods.
-	// 
+	//
 	@Override
 	public ReferenceList getReferencesContainingWord(String word) {
 		// TODO Implement me: Stage 12

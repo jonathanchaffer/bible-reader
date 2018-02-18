@@ -81,10 +81,9 @@ public class ArrayListBible implements Bible {
 	}
 
 	/**
-	 * @return a VerseList containing all of the verses from the Bible, in
-	 *         order. The version of the VerseList should be set to the version
-	 *         of this Bible and the description should be set to the title of
-	 *         this Bible.
+	 * @return a VerseList containing all of the verses from the Bible, in order.
+	 *         The version of the VerseList should be set to the version of this
+	 *         Bible and the description should be set to the title of this Bible.
 	 */
 	@Override
 	public VerseList getAllVerses() {
@@ -96,18 +95,17 @@ public class ArrayListBible implements Bible {
 	}
 
 	/**
-	 * Returns a VerseList of all verses containing <i>phrase</i>, which may be
-	 * a word, sentence, or whatever. This method just does simple string
-	 * matching, so if <i>phrase</i> is <i>eaten</i>, verses with <i>beaten</i>
-	 * will be included.
+	 * Returns a VerseList of all verses containing <i>phrase</i>, which may be a
+	 * word, sentence, or whatever. This method just does simple string matching, so
+	 * if <i>phrase</i> is <i>eaten</i>, verses with <i>beaten</i> will be included.
 	 * 
 	 * @param phrase
 	 *            the word/phrase to search for.
-	 * @return a VerseList of all verses containing <i>phrase</i>, which may be
-	 *         a word, sentence, or whatever. If there are no such verses,
-	 *         returns an empty VerseList. In all cases, the version will be set
-	 *         to the version of the Bible (via getVersion()) and the
-	 *         description will be set to parameter <i>phrase</i>.
+	 * @return a VerseList of all verses containing <i>phrase</i>, which may be a
+	 *         word, sentence, or whatever. If there are no such verses, returns an
+	 *         empty VerseList. In all cases, the version will be set to the version
+	 *         of the Bible (via getVersion()) and the description will be set to
+	 *         parameter <i>phrase</i>.
 	 */
 	@Override
 	public VerseList getVersesContaining(String phrase) {
@@ -125,15 +123,15 @@ public class ArrayListBible implements Bible {
 
 	/**
 	 * Returns a ReferenceList of all references for verses containing
-	 * <i>phrase</i>, which may be a word, sentence, or whatever. This method
-	 * just does simple string matching, so if <i>phrase</i> is <i>eaten</i>,
-	 * verses with <i>beaten</i> will be included.
+	 * <i>phrase</i>, which may be a word, sentence, or whatever. This method just
+	 * does simple string matching, so if <i>phrase</i> is <i>eaten</i>, verses with
+	 * <i>beaten</i> will be included.
 	 * 
 	 * @param phrase
 	 *            the phrase to search for
 	 * @return a ReferenceList of all references for verses containing
-	 *         <i>phrase</i>, which may be a word, sentence, or whatever. If
-	 *         there are no such verses, returns an empty ReferenceList.
+	 *         <i>phrase</i>, which may be a word, sentence, or whatever. If there
+	 *         are no such verses, returns an empty ReferenceList.
 	 */
 	@Override
 	public ReferenceList getReferencesContaining(String phrase) {
@@ -151,15 +149,14 @@ public class ArrayListBible implements Bible {
 
 	/**
 	 * @param references
-	 *            a ReferenceList of references for which verses are being
-	 *            requested
+	 *            a ReferenceList of references for which verses are being requested
 	 * @return a VerseList with each element being the Verse with that Reference
-	 *         from this Bible, or null if the particular Reference does not
-	 *         occur in this Bible. Thus, the size of the returned list will be
-	 *         the same as the size of the references parameter, with the items
-	 *         from each corresponding. The version will be set to the version
-	 *         of the Bible (via getVersion()) and the description will be set
-	 *         "Arbitrary list of Verses".
+	 *         from this Bible, or null if the particular Reference does not occur
+	 *         in this Bible. Thus, the size of the returned list will be the same
+	 *         as the size of the references parameter, with the items from each
+	 *         corresponding. The version will be set to the version of the Bible
+	 *         (via getVersion()) and the description will be set "Arbitrary list of
+	 *         Verses".
 	 */
 	@Override
 	public VerseList getVerses(ReferenceList references) {
