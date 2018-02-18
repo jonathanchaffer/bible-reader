@@ -7,13 +7,10 @@ import java.util.ArrayList;
  * references.
  * 
  * @author cusack
+ * @author Jon Chaffer & Jason Gombas
  */
 public class BibleReaderModel implements MultiBibleModel {
 	private ArrayList<Bible> bibles;
-	// ---------------------------------------------------------------------------
-	// TODO Add more fields here: Stage 5
-	// You need to store several Bible objects.
-	// You may need to store other data as well.
 
 	/**
 	 * Default constructor. You probably need to instantiate objects and do other assorted things to set up the model.

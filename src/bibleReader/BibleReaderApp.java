@@ -23,59 +23,57 @@ import bibleReader.model.VerseList;
  * The main class for the Bible Reader Application.
  * 
  * @author cusack
+ * @author Jon Chaffer & Jason Gombas
  */
 public class BibleReaderApp extends JFrame {
-	// Change these to suit your needs.
-	public static final int	width	= 600;
-	public static final int	height	= 600;
+
+	public static final int width = 600;
+	public static final int height = 600;
 
 	public static void main(String[] args) {
 		new BibleReaderApp();
 	}
 
 	// Fields
-	private BibleReaderModel	model;
-	private JFrame				mainFrame;
-	private ResultView			resultView;
-	private JTextField			inputField;
-	private JButton				searchButton;
-	private JButton				passageButton;
+	private BibleReaderModel model;
+	private ResultView resultView;
+	private JTextField inputField;
+	private JButton searchButton;
+	private JButton passageButton;
 
 	/**
-	 * Default constructor. We may want to replace this with a different one.
+	 * Set-up the bible application and create the GUI.
 	 */
 	public BibleReaderApp() {
-		// There is no guarantee that this complete/correct, so take a close
-		// look to make sure you understand what this code is doing in case
-		// you need to modify or add to it.
-		model = new BibleReaderModel(); // For now call the default constructor. This might change.
+		model = new BibleReaderModel();
 		File kjvFile = new File("kjv.atv");
 		VerseList verses = BibleIO.readBible(kjvFile);
-		
+
 		Bible kjv = new ArrayListBible(verses);
-		
+
 		model.addBible(kjv);
 
 		setTitle("Bible Reader");
-		
+
 		resultView = new ResultView(model);
 		inputField = new JTextField("", 20);
 		searchButton = new JButton("Search");
 		passageButton = new JButton("Passage");
-		
-		inputField.addActionListener(new ActionListener(){
+
+		// Add all the action listeners
+		inputField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resultView.updateSearch(inputField.getText());
 			}
 		});
-		
-		searchButton.addActionListener(new ActionListener(){
+
+		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resultView.updateSearch(inputField.getText());
 			}
 		});
-		
-		passageButton.addActionListener(new ActionListener(){
+
+		passageButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resultView.updatePassage(inputField.getText());
 			}
@@ -91,20 +89,20 @@ public class BibleReaderApp extends JFrame {
 	}
 
 	/**
-	 * Set up the main GUI. Make sure you don't forget to put resultView somewhere!
+	 * Set up the main GUI.
 	 */
 	private void setupGUI() {
 		Container cont = getContentPane();
 		cont.setLayout(new BorderLayout());
-		
+
 		JPanel inputAndButtons = new JPanel();
 		inputAndButtons.setLayout(new FlowLayout());
 		cont.add(inputAndButtons, BorderLayout.NORTH);
-		
+
 		inputAndButtons.add(inputField);
 		inputAndButtons.add(searchButton);
 		inputAndButtons.add(passageButton);
-		
+
 		cont.add(resultView, BorderLayout.CENTER);
 
 		// The stage numbers below may change, so make sure to pay attention to
