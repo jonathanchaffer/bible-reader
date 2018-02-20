@@ -34,10 +34,6 @@ public class ResultView extends JPanel {
 	 */
 	public ResultView(BibleReaderModel myModel) {
 		bibleModel = myModel;
-		editorPane = new JEditorPane();
-		scrollPane = new JScrollPane(editorPane);
-		editorPane.setContentType("text/html");
-		stats = new JTextArea("");
 		setupGUI();
 	}
 
@@ -46,6 +42,10 @@ public class ResultView extends JPanel {
 	 * constructor.
 	 */
 	private void setupGUI() {
+		editorPane = new JEditorPane();
+		scrollPane = new JScrollPane(editorPane);
+		editorPane.setContentType("text/html");
+		stats = new JTextArea("");
 		setLayout(new BorderLayout());
 		add(scrollPane, BorderLayout.CENTER);
 		add(stats, BorderLayout.SOUTH);
@@ -67,6 +67,8 @@ public class ResultView extends JPanel {
 	 * @param input
 	 */
 	public void updatePassage(String input) {
+		// TODO Implement getReferencesForPassage method in BibleReaderModel then change
+		// this to use the getPassageHTML method.
 		editorPane.setText("Passage search not yet implemented.");
 		editorPane.setCaretPosition(0);
 	}
@@ -94,8 +96,8 @@ public class ResultView extends JPanel {
 	 * Returns the HTML text from a search.
 	 * 
 	 * @param input
-	 * @return A String which contains basic HTML code that formats search
-	 *         results in a table format.
+	 * @return A String which contains basic HTML code that formats search results
+	 *         in a table format.
 	 */
 	private String getSearchHTML(String input) {
 		StringBuffer html = new StringBuffer("");
@@ -118,6 +120,9 @@ public class ResultView extends JPanel {
 			html.append("</tbody></table><br>");
 		}
 		updateStatsSearch(num, input);
+		if (num == 0) {
+			return "No Results";
+		}
 		return html.toString();
 	}
 
@@ -125,8 +130,8 @@ public class ResultView extends JPanel {
 	 * Returns the HTML text from a passage search.
 	 * 
 	 * @param input
-	 * @return A String which contains basic HTML code that formats passage
-	 *         search results in a table format.
+	 * @return A String which contains basic HTML code that formats passage search
+	 *         results in a table format.
 	 */
 	private String getPassageHTML(String input) {
 		StringBuffer html = new StringBuffer("");
