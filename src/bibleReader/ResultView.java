@@ -18,7 +18,7 @@ import bibleReader.model.VerseList;
  * The display panel for the Bible Reader.
  * 
  * @author cusack
- * @author Jon Chaffer & Jason Gombas
+ * @author Jonathan Chaffer & Jason Gombas (2018)
  */
 public class ResultView extends JPanel {
 	private BibleReaderModel bibleModel;
@@ -67,7 +67,7 @@ public class ResultView extends JPanel {
 	 * @param input
 	 */
 	public void updatePassage(String input) {
-		editorPane.setText(getPassageHTML(input));
+		editorPane.setText("Passage search not yet implemented.");
 		editorPane.setCaretPosition(0);
 	}
 
@@ -94,8 +94,8 @@ public class ResultView extends JPanel {
 	 * Returns the HTML text from a search.
 	 * 
 	 * @param input
-	 * @return A String which contains basic HTML code that formats search results
-	 *         in a table format.
+	 * @return A String which contains basic HTML code that formats search
+	 *         results in a table format.
 	 */
 	private String getSearchHTML(String input) {
 		StringBuffer html = new StringBuffer("");
@@ -125,8 +125,8 @@ public class ResultView extends JPanel {
 	 * Returns the HTML text from a passage search.
 	 * 
 	 * @param input
-	 * @return A String which contains basic HTML code that formats passage search
-	 *         results in a table format.
+	 * @return A String which contains basic HTML code that formats passage
+	 *         search results in a table format.
 	 */
 	private String getPassageHTML(String input) {
 		StringBuffer html = new StringBuffer("");

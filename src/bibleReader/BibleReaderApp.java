@@ -23,7 +23,7 @@ import bibleReader.model.VerseList;
  * The main class for the Bible Reader Application.
  * 
  * @author cusack
- * @author Jon Chaffer & Jason Gombas
+ * @author Jonathan Chaffer & Jason Gombas (2018)
  */
 public class BibleReaderApp extends JFrame {
 
@@ -60,7 +60,7 @@ public class BibleReaderApp extends JFrame {
 		searchButton = new JButton("Search");
 		passageButton = new JButton("Passage");
 
-		// Add all the action listeners
+		// Add action listeners to inputField, searchButton, and passageButton
 		inputField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resultView.updateSearch(inputField.getText());
@@ -104,16 +104,6 @@ public class BibleReaderApp extends JFrame {
 		inputAndButtons.add(passageButton);
 
 		cont.add(resultView, BorderLayout.CENTER);
-
-		// The stage numbers below may change, so make sure to pay attention to
-		// what the assignment says.
-		// TODO Add passage lookup: Stage ?
-		// TODO Add 2nd version on display: Stage ?
-		// TODO Limit the displayed search results to 20 at a time: Stage ?
-		// TODO Add 3rd versions on display: Stage ?
-		// TODO Format results better: Stage ?
-		// TODO Display cross references for third version: Stage ?
-		// TODO Save/load search results: Stage ?
 	}
 
 }
