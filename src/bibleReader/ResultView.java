@@ -43,9 +43,11 @@ public class ResultView extends JPanel {
 	 */
 	private void setupGUI() {
 		editorPane = new JEditorPane();
+		editorPane.setEditable(false);
 		scrollPane = new JScrollPane(editorPane);
 		editorPane.setContentType("text/html");
 		stats = new JTextArea("");
+		stats.setEditable(false);
 		setLayout(new BorderLayout());
 		add(scrollPane, BorderLayout.CENTER);
 		add(stats, BorderLayout.SOUTH);

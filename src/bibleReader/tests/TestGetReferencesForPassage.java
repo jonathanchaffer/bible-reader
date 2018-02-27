@@ -20,10 +20,21 @@ import bibleReader.model.ReferenceList;
 import bibleReader.model.Verse;
 import bibleReader.model.VerseList;
 
+/**
+ * Tests for the getReferencesForPassage method of BibleReaderModel.
+ * 
+ * @author Jonathan Chaffer, Jacob Lahr, Gisa Gatera, 2018
+ */
 public class TestGetReferencesForPassage {
 	private static VerseList versesFromFile;
 	private BibleReaderModel model;
 
+	/**
+	 * Returns a VerseList for the specified reference lookup in KJV.
+	 * 
+	 * @param reference String of the reference lookup.
+	 * @return A VerseList for the specified reference lookup in KJV.
+	 */
 	public VerseList getVersesForReference(String reference) {
 		ReferenceList list = model.getReferencesForPassage(reference);
 		VerseList results = model.getVerses("KJV", list);
@@ -110,7 +121,7 @@ public class TestGetReferencesForPassage {
 				new Reference(BookOfBible.Malachi, 4, 6));
 		assertArrayEquals(vl2.toArray(), getVersesForReference("Mal 3:6-4:6").toArray());
 	}
-	
+
 	@Test
 	public void testWholeBook() {
 		VerseList vl1 = model.getBible("KJV").getVersesInclusive(new Reference(BookOfBible.Kings1, 1, 1),
@@ -121,7 +132,7 @@ public class TestGetReferencesForPassage {
 				new Reference(BookOfBible.Philemon, 4, 23));
 		assertArrayEquals(vl2.toArray(), getVersesForReference("Philemon").toArray());
 	}
-	
+
 	@Test
 	public void testOddSyntax() {
 		VerseList vl1 = model.getBible("KJV").getVersesInclusive(new Reference(BookOfBible.Ephesians, 5, 1),
@@ -132,11 +143,25 @@ public class TestGetReferencesForPassage {
 				new Reference(BookOfBible.Hebrews, 12, 2));
 		assertArrayEquals(vl2.toArray(), getVersesForReference("Hebrews 11-12:2").toArray());
 	}
-	
+
 	@Test
 	public void testInvalidBookChapterOrVerse() {
-		VerseList vl1 = new VerseList("", "");
-		assertArrayEquals(vl1.toArray(), getVersesForReference("Jude 2").toArray());
+		VerseList emptyVerseList = new VerseList("", "");
+		assertArrayEquals(emptyVerseList.toArray(), getVersesForReference("Jude 2").toArray());
+		assertArrayEquals(emptyVerseList.toArray(), getVersesForReference("Herman 2").toArray());
+		assertArrayEquals(emptyVerseList.toArray(), getVersesForReference("John 3:163").toArray());
+		assertArrayEquals(emptyVerseList.toArray(), getVersesForReference("Mal 13:6-24:7").toArray());
 	}
 
+	@Test
+	public void testOutOfOrderChapeterOrVerse() {
+		VerseList emptyVerseList = new VerseList("", "");
+		assertArrayEquals(emptyVerseList.toArray(), getVersesForReference("1Tim 3-2").toArray());
+		assertArrayEquals(emptyVerseList.toArray(), getVersesForReference("Deut :2-3").toArray());
+		assertArrayEquals(emptyVerseList.toArray(), getVersesForReference("Josh 6:4- :6").toArray());
+		assertArrayEquals(emptyVerseList.toArray(), getVersesForReference("Ruth : - :").toArray());
+		assertArrayEquals(emptyVerseList.toArray(), getVersesForReference("2 Sam : 4-7 :").toArray());
+		assertArrayEquals(emptyVerseList.toArray(), getVersesForReference("Ephesians 5:2,4").toArray());
+		assertArrayEquals(emptyVerseList.toArray(), getVersesForReference("John 3;16").toArray());
+	}
 }
