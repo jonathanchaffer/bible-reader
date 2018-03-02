@@ -29,39 +29,21 @@ public class ArrayListBible implements Bible {
 		this.title = verses.getDescription();
 	}
 
-	/**
-	 * Returns the number of verses that this Bible is currently storing.
-	 * 
-	 * @return the number of verses in the Bible.
-	 */
 	@Override
 	public int getNumberOfVerses() {
 		return verses.size();
 	}
 
-	/**
-	 * Returns which version this object is storing (e.g. ESV, KJV)
-	 * 
-	 * @return a string representation of the version.
-	 */
 	@Override
 	public String getVersion() {
 		return version;
 	}
 
-	/**
-	 * @return a string representation of the full title.
-	 */
 	@Override
 	public String getTitle() {
 		return title;
 	}
 
-	/**
-	 * @param ref
-	 *            any reference object
-	 * @return true if and only if ref is actually in this Bible
-	 */
 	@Override
 	public boolean isValid(Reference ref) {
 		for (Verse verse : verses) {
@@ -72,14 +54,6 @@ public class ArrayListBible implements Bible {
 		return false;
 	}
 
-	/**
-	 * Return the text of the verse with the given reference
-	 * 
-	 * @param ref
-	 *            the Reference to the desired verse.
-	 * @return a string representation of the text of the verse, or null if the
-	 *         Bible does not contain the verse.
-	 */
 	@Override
 	public String getVerseText(Reference ref) {
 		for (Verse verse : verses) {
@@ -90,14 +64,6 @@ public class ArrayListBible implements Bible {
 		return null;
 	}
 
-	/**
-	 * Return a Verse object for the corresponding Reference.
-	 * 
-	 * @param ref
-	 *            A reference to the desired verse.
-	 * @return a Verse object which has Reference r, or null if the verse isn't
-	 *         in the Bible.
-	 */
 	@Override
 	public Verse getVerse(Reference ref) {
 		for (Verse verse : verses) {
@@ -108,28 +74,12 @@ public class ArrayListBible implements Bible {
 		return null;
 	}
 
-	/**
-	 * @param book
-	 *            the book of the Bible
-	 * @param chapter
-	 *            the chapter of the book
-	 * @param verse
-	 *            the verse of the chapter
-	 * @return a Verse object with reference "book chapter:verse", or null if
-	 *         the verse isn't in the Bible.
-	 */
 	@Override
 	public Verse getVerse(BookOfBible book, int chapter, int verse) {
 		Reference ref = new Reference(book, chapter, verse);
 		return getVerse(ref);
 	}
 
-	/**
-	 * @return a VerseList containing all of the verses from the Bible, in
-	 *         order. The version of the VerseList should be set to the version
-	 *         of this Bible and the description should be set to the title of
-	 *         this Bible.
-	 */
 	@Override
 	public VerseList getAllVerses() {
 		VerseList allVerses = new VerseList(getVersion(), getTitle());
@@ -139,20 +89,6 @@ public class ArrayListBible implements Bible {
 		return allVerses;
 	}
 
-	/**
-	 * Returns a VerseList of all verses containing <i>phrase</i>, which may be
-	 * a word, sentence, or whatever. This method just does simple string
-	 * matching, so if <i>phrase</i> is <i>eaten</i>, verses with <i>beaten</i>
-	 * will be included.
-	 * 
-	 * @param phrase
-	 *            the word/phrase to search for.
-	 * @return a VerseList of all verses containing <i>phrase</i>, which may be
-	 *         a word, sentence, or whatever. If there are no such verses,
-	 *         returns an empty VerseList. In all cases, the version will be set
-	 *         to the version of the Bible (via getVersion()) and the
-	 *         description will be set to parameter <i>phrase</i>.
-	 */
 	@Override
 	public VerseList getVersesContaining(String phrase) {
 		VerseList versesToReturn = new VerseList(getVersion(), phrase);
@@ -167,18 +103,6 @@ public class ArrayListBible implements Bible {
 		return versesToReturn;
 	}
 
-	/**
-	 * Returns a ReferenceList of all references for verses containing
-	 * <i>phrase</i>, which may be a word, sentence, or whatever. This method
-	 * just does simple string matching, so if <i>phrase</i> is <i>eaten</i>,
-	 * verses with <i>beaten</i> will be included.
-	 * 
-	 * @param phrase
-	 *            the phrase to search for
-	 * @return a ReferenceList of all references for verses containing
-	 *         <i>phrase</i>, which may be a word, sentence, or whatever. If
-	 *         there are no such verses, returns an empty ReferenceList.
-	 */
 	@Override
 	public ReferenceList getReferencesContaining(String phrase) {
 		ReferenceList refsToReturn = new ReferenceList();
@@ -193,18 +117,6 @@ public class ArrayListBible implements Bible {
 		return refsToReturn;
 	}
 
-	/**
-	 * @param references
-	 *            a ReferenceList of references for which verses are being
-	 *            requested
-	 * @return a VerseList with each element being the Verse with that Reference
-	 *         from this Bible, or null if the particular Reference does not
-	 *         occur in this Bible. Thus, the size of the returned list will be
-	 *         the same as the size of the references parameter, with the items
-	 *         from each corresponding. The version will be set to the version
-	 *         of the Bible (via getVersion()) and the description will be set
-	 *         "Arbitrary list of Verses".
-	 */
 	@Override
 	public VerseList getVerses(ReferenceList references) {
 		VerseList versesToReturn = new VerseList(getVersion(), "Arbitrary list of Verses");
@@ -216,27 +128,105 @@ public class ArrayListBible implements Bible {
 
 	@Override
 	public int getLastVerseNumber(BookOfBible book, int chapter) {
-		return -1;
+		int num = -1;
+		if (book == null) {
+			return num;
+		}
+		boolean reachedBook = false;
+		boolean reachedChapter = false;
+		for (Verse verse : verses) {
+			if (verse.getReference().getBookOfBible().equals(book)) {
+				reachedBook = true;
+				if (verse.getReference().getChapter() == chapter) {
+					reachedChapter = true;
+					num = verse.getReference().getVerse();
+				}
+			}
+			if (reachedBook && reachedChapter && verse.getReference().getChapter() > chapter) {
+				return num;
+			}
+		}
+		return num;
 	}
 
 	@Override
 	public int getLastChapterNumber(BookOfBible book) {
-		return -1;
+		int num = -1;
+		if (book == null) {
+			return num;
+		}
+		boolean reachedBook = false;
+		for (Verse verse : verses) {
+			if (verse.getReference().getBookOfBible().equals(book)) {
+				reachedBook = true;
+				num = verse.getReference().getChapter();
+			}
+			if (reachedBook && !verse.getReference().getBook().equals(book)) {
+				return num;
+			}
+		}
+		return num;
 	}
 
 	@Override
 	public ReferenceList getReferencesInclusive(Reference firstVerse, Reference lastVerse) {
-		return null;
+		ReferenceList refs = getReferencesExclusive(firstVerse, lastVerse);
+		if (!isValid(lastVerse)) {
+			return refs;
+		}
+		refs.add(lastVerse);
+		return refs;
 	}
 
 	@Override
 	public ReferenceList getReferencesExclusive(Reference firstVerse, Reference lastVerse) {
-		return null;
+		ReferenceList refs = new ReferenceList();
+		if (firstVerse.compareTo(lastVerse) > 0) {
+			return refs;
+		}
+		
+		if (!isValid(firstVerse)) {
+			return refs;
+		}
+		
+		boolean reachedFirstVerse = false;
+		boolean reachedLastVerse = false;
+		
+		int firstVerseIndex = -1;
+		for (int i = 0; reachedFirstVerse == false; i++) {
+			Verse verse = verses.get(i);
+			if (verse.getReference().equals(firstVerse)) {
+				reachedFirstVerse = true;
+				firstVerseIndex = i;
+			}
+		}
+		for (int i = firstVerseIndex; reachedLastVerse == false; i++) {
+			Verse verse = verses.get(i);
+			if (verse.getReference().compareTo(lastVerse) < 0) {
+				refs.add(verse.getReference());
+			} else {
+				reachedLastVerse = true;
+			}
+		}
+		return refs;
 	}
 
 	@Override
 	public ReferenceList getReferencesForBook(BookOfBible book) {
-		return null;
+		ReferenceList refs = new ReferenceList();
+		if (book == null) {
+			return refs;
+		}
+		
+		for (Verse verse : verses) {
+			if (verse.getReference().getBookOfBible().equals(book)) {
+				while (verse.getReference().getBookOfBible().equals(book)) {
+					refs.add(verse.getReference());
+				}
+				return refs;
+			}
+		}
+		return refs;
 	}
 
 	@Override
