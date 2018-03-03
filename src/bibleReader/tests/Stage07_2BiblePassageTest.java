@@ -560,7 +560,7 @@ public class Stage07_2BiblePassageTest {
 		assertEquals(0, refResults.size());
 
 		// Ruth 2:24 does not exist, so it should return nothing.
-		refResults = testBible.getReferencesInclusive(new Reference(
+		refResults = testBible.getReferencesExclusive(new Reference(
 				BookOfBible.Ruth, 2, 24),
 				new Reference(BookOfBible.Ruth, 3, 18));
 		assertEquals(0, refResults.size());
