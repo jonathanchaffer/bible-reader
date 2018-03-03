@@ -18,8 +18,6 @@ public class ArrayListBible implements Bible {
 	/**
 	 * Create a new Bible with the given verses.
 	 * 
-	 * @param version
-	 *            the version of the Bible (e.g. ESV, KJV, ASV, NIV).
 	 * @param verses
 	 *            All of the verses of this version of the Bible.
 	 */
