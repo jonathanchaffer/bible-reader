@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * A class that stores a version of the Bible.
  * 
  * @author Chuck Cusack (Provided the interface). Modified February 9, 2015.
- * @author Jonathan Chaffer (provided the implementation), 2018.
+ * @author Jonathan Chaffer & Jacob Lahr (provided the implementation), 2018.
  */
 public class ArrayListBible implements Bible {
 
@@ -353,7 +353,8 @@ public class ArrayListBible implements Bible {
 	@Override
 	public VerseList getVersesInclusive(Reference firstVerse, Reference lastVerse) {
 		// TODO could this reuse some of getVersesExclusive??
-		VerseList versesToReturn = new VerseList(this.getVersion(), firstVerse.toString() + " to " + lastVerse.toString());
+		VerseList versesToReturn = new VerseList(this.getVersion(),
+				firstVerse.toString() + " to " + lastVerse.toString());
 		if (firstVerse.compareTo(lastVerse) > 0) {
 			return versesToReturn;
 		}
@@ -387,7 +388,8 @@ public class ArrayListBible implements Bible {
 
 	@Override
 	public VerseList getVersesExclusive(Reference firstVerse, Reference lastVerse) {
-		VerseList versesToReturn = new VerseList(this.getVersion(), firstVerse.toString() + " to " + lastVerse.toString() + " excluding the final one");
+		VerseList versesToReturn = new VerseList(this.getVersion(),
+				firstVerse.toString() + " to " + lastVerse.toString() + " excluding the final one");
 		if (firstVerse.compareTo(lastVerse) > 0) {
 			return versesToReturn;
 		}
@@ -417,26 +419,67 @@ public class ArrayListBible implements Bible {
 
 	@Override
 	public VerseList getBook(BookOfBible book) {
-		return null;
+		if (book != null) {
+			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
+			int lastChapter = getLastChapterNumber(book);
+			for (Verse verse : getVersesInclusive(new Reference(book, 1, 1),
+					new Reference(book, lastChapter, getLastVerseNumber(book, lastChapter)))) {
+				versesToReturn.add(verse);
+			}
+			return versesToReturn;
+		}
+		return new VerseList(this.getVersion(), "");
 	}
 
 	@Override
 	public VerseList getChapter(BookOfBible book, int chapter) {
-		return null;
+		if (book != null) {
+			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
+			for (Verse verse : getVersesInclusive(new Reference(book, chapter, 1),
+					new Reference(book, chapter, getLastVerseNumber(book, chapter)))) {
+				versesToReturn.add(verse);
+			}
+			return versesToReturn;
+		}
+		return new VerseList(this.getVersion(), "");
 	}
 
 	@Override
 	public VerseList getChapters(BookOfBible book, int chapter1, int chapter2) {
-		return null;
+		if (book != null) {
+			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
+			for (Verse verse : getVersesInclusive(new Reference(book, chapter1, 1),
+					new Reference(book, chapter2, getLastVerseNumber(book, chapter2)))) {
+				versesToReturn.add(verse);
+			}
+			return versesToReturn;
+		}
+		return new VerseList(this.getVersion(), "");
 	}
 
 	@Override
 	public VerseList getPassage(BookOfBible book, int chapter, int verse1, int verse2) {
-		return null;
+		if (book != null) {
+			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
+			for (Verse verse : getVersesInclusive(new Reference(book, chapter, verse1),
+					new Reference(book, chapter, verse2))) {
+				versesToReturn.add(verse);
+			}
+			return versesToReturn;
+		}
+		return new VerseList(this.getVersion(), "");
 	}
 
 	@Override
 	public VerseList getPassage(BookOfBible book, int chapter1, int verse1, int chapter2, int verse2) {
-		return null;
+		if (book != null) {
+			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
+			for (Verse verse : getVersesInclusive(new Reference(book, chapter1, verse1),
+					new Reference(book, chapter2, verse2))) {
+				versesToReturn.add(verse);
+			}
+			return versesToReturn;
+		}
+		return new VerseList(this.getVersion(), "");
 	}
 }
