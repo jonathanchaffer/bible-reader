@@ -139,10 +139,12 @@ public class ArrayListBible implements Bible {
 				reachedBook = true;
 				if (verse.getReference().getChapter() == chapter) {
 					reachedChapter = true;
-					num = verse.getReference().getVerse();
 				}
 			}
-			if (reachedBook && reachedChapter && verse.getReference().getChapter() > chapter) {
+			if (reachedBook && reachedChapter && verse.getReference().getChapter() == chapter
+					&& verse.getReference().getBookOfBible().equals(book)) {
+				num = verse.getReference().getVerse();
+			} else if (reachedBook && reachedChapter) {
 				return num;
 			}
 		}
@@ -159,9 +161,10 @@ public class ArrayListBible implements Bible {
 		for (Verse verse : verses) {
 			if (verse.getReference().getBookOfBible().equals(book)) {
 				reachedBook = true;
-				num = verse.getReference().getChapter();
 			}
-			if (reachedBook && !verse.getReference().getBook().equals(book)) {
+			if (reachedBook && verse.getReference().getBookOfBible().equals(book)) {
+				num = verse.getReference().getChapter();
+			} else if (reachedBook) {
 				return num;
 			}
 		}
@@ -170,10 +173,17 @@ public class ArrayListBible implements Bible {
 
 	@Override
 	public ReferenceList getReferencesInclusive(Reference firstVerse, Reference lastVerse) {
-		ReferenceList refs = getReferencesExclusive(firstVerse, lastVerse);
+		ReferenceList refs = new ReferenceList();
+		if (firstVerse.compareTo(lastVerse) > 0) {
+			return refs;
+		}
+		if (!isValid(firstVerse)) {
+			return refs;
+		}
 		if (!isValid(lastVerse)) {
 			return refs;
 		}
+		refs = getReferencesExclusive(firstVerse, lastVerse);
 		refs.add(lastVerse);
 		return refs;
 	}
@@ -184,14 +194,11 @@ public class ArrayListBible implements Bible {
 		if (firstVerse.compareTo(lastVerse) > 0) {
 			return refs;
 		}
-		
 		if (!isValid(firstVerse)) {
 			return refs;
 		}
-		
 		boolean reachedFirstVerse = false;
 		boolean reachedLastVerse = false;
-		
 		int firstVerseIndex = -1;
 		for (int i = 0; reachedFirstVerse == false; i++) {
 			Verse verse = verses.get(i);
@@ -217,12 +224,14 @@ public class ArrayListBible implements Bible {
 		if (book == null) {
 			return refs;
 		}
-		
+		boolean reachedBook = false;
 		for (Verse verse : verses) {
 			if (verse.getReference().getBookOfBible().equals(book)) {
-				while (verse.getReference().getBookOfBible().equals(book)) {
-					refs.add(verse.getReference());
-				}
+				reachedBook = true;
+			}
+			if (reachedBook && verse.getReference().getBookOfBible().equals(book)) {
+				refs.add(verse.getReference());
+			} else if (reachedBook) {
 				return refs;
 			}
 		}
@@ -231,32 +240,181 @@ public class ArrayListBible implements Bible {
 
 	@Override
 	public ReferenceList getReferencesForChapter(BookOfBible book, int chapter) {
-		return null;
+		ReferenceList refs = new ReferenceList();
+		if (book == null) {
+			return refs;
+		}
+		boolean reachedBook = false;
+		boolean reachedChapter = false;
+		for (Verse verse : verses) {
+			if (verse.getReference().getBookOfBible().equals(book)) {
+				reachedBook = true;
+				if (verse.getReference().getChapter() == chapter) {
+					reachedChapter = true;
+				}
+			}
+			if (reachedBook && reachedChapter && verse.getReference().getChapter() == chapter
+					&& verse.getReference().getBookOfBible().equals(book)) {
+				refs.add(verse.getReference());
+			} else if (reachedBook && reachedChapter) {
+				return refs;
+			}
+		}
+		return refs;
 	}
 
 	@Override
 	public ReferenceList getReferencesForChapters(BookOfBible book, int chapter1, int chapter2) {
-		return null;
+		ReferenceList refs = new ReferenceList();
+		if (book == null) {
+			return refs;
+		}
+		boolean reachedBook = false;
+		boolean reachedFirstChapter = false;
+		for (Verse verse : verses) {
+			if (verse.getReference().getBookOfBible().equals(book)) {
+				reachedBook = true;
+				if (verse.getReference().getChapter() == chapter1) {
+					reachedFirstChapter = true;
+				}
+			}
+			if (reachedBook && reachedFirstChapter && verse.getReference().getChapter() <= chapter2
+					&& verse.getReference().getBookOfBible().equals(book)) {
+				refs.add(verse.getReference());
+			} else if (reachedBook && reachedFirstChapter) {
+				return refs;
+			}
+		}
+		return refs;
 	}
 
 	@Override
 	public ReferenceList getReferencesForPassage(BookOfBible book, int chapter, int verse1, int verse2) {
-		return null;
+		ReferenceList refs = new ReferenceList();
+		if (book == null) {
+			return refs;
+		}
+		boolean reachedBook = false;
+		boolean reachedChapter = false;
+		boolean reachedFirstVerse = false;
+		for (Verse verse : verses) {
+			if (verse.getReference().getBookOfBible().equals(book)) {
+				reachedBook = true;
+				if (verse.getReference().getChapter() == chapter) {
+					reachedChapter = true;
+					if (verse.getReference().getVerse() == verse1) {
+						reachedFirstVerse = true;
+					}
+				}
+			}
+			if (reachedBook && reachedChapter && reachedFirstVerse && verse.getReference().getVerse() <= verse2
+					&& verse.getReference().getBookOfBible().equals(book)
+					&& verse.getReference().getChapter() == chapter) {
+				refs.add(verse.getReference());
+			} else if (reachedBook && reachedChapter && reachedFirstVerse) {
+				return refs;
+			}
+		}
+		return refs;
 	}
 
 	@Override
 	public ReferenceList getReferencesForPassage(BookOfBible book, int chapter1, int verse1, int chapter2, int verse2) {
-		return null;
+		ReferenceList refs = new ReferenceList();
+		if (book == null) {
+			return refs;
+		}
+		boolean reachedBook = false;
+		boolean reachedFirstChapter = false;
+		boolean reachedFirstVerse = false;
+		for (Verse verse : verses) {
+			if (verse.getReference().getBookOfBible().equals(book)) {
+				reachedBook = true;
+				if (verse.getReference().getChapter() == chapter1) {
+					reachedFirstChapter = true;
+					if (verse.getReference().getVerse() == verse1) {
+						reachedFirstVerse = true;
+					}
+				}
+			}
+			if (reachedBook && reachedFirstChapter && reachedFirstVerse
+					&& verse.getReference().getBookOfBible().equals(book)
+					&& verse.getReference().getChapter() <= chapter2) {
+				if (verse.getReference().getChapter() != chapter2) {
+					refs.add(verse.getReference());
+				} else if (verse.getReference().getVerse() <= verse2) {
+					refs.add(verse.getReference());
+				}
+			} else if (reachedBook && reachedFirstChapter && reachedFirstVerse) {
+				return refs;
+			}
+		}
+		return refs;
 	}
 
 	@Override
 	public VerseList getVersesInclusive(Reference firstVerse, Reference lastVerse) {
-		return null;
+		// TODO could this reuse some of getVersesExclusive??
+		VerseList versesToReturn = new VerseList(this.getVersion(), firstVerse.toString() + " to " + lastVerse.toString());
+		if (firstVerse.compareTo(lastVerse) > 0) {
+			return versesToReturn;
+		}
+		if (!isValid(firstVerse)) {
+			return versesToReturn;
+		}
+		if (!isValid(lastVerse)) {
+			return versesToReturn;
+		}
+		boolean reachedFirstVerse = false;
+		boolean reachedLastVerse = false;
+		int firstVerseIndex = -1;
+		for (int i = 0; reachedFirstVerse == false; i++) {
+			Verse verse = verses.get(i);
+			if (verse.getReference().equals(firstVerse)) {
+				reachedFirstVerse = true;
+				firstVerseIndex = i;
+			}
+		}
+		for (int i = firstVerseIndex; reachedLastVerse == false; i++) {
+			Verse verse = verses.get(i);
+			if (verse.getReference().compareTo(lastVerse) < 0) {
+				versesToReturn.add(verse);
+			} else {
+				versesToReturn.add(verse);
+				reachedLastVerse = true;
+			}
+		}
+		return versesToReturn;
 	}
 
 	@Override
 	public VerseList getVersesExclusive(Reference firstVerse, Reference lastVerse) {
-		return null;
+		VerseList versesToReturn = new VerseList(this.getVersion(), firstVerse.toString() + " to " + lastVerse.toString() + " excluding the final one");
+		if (firstVerse.compareTo(lastVerse) > 0) {
+			return versesToReturn;
+		}
+		if (!isValid(firstVerse)) {
+			return versesToReturn;
+		}
+		boolean reachedFirstVerse = false;
+		boolean reachedLastVerse = false;
+		int firstVerseIndex = -1;
+		for (int i = 0; reachedFirstVerse == false; i++) {
+			Verse verse = verses.get(i);
+			if (verse.getReference().equals(firstVerse)) {
+				reachedFirstVerse = true;
+				firstVerseIndex = i;
+			}
+		}
+		for (int i = firstVerseIndex; reachedLastVerse == false; i++) {
+			Verse verse = verses.get(i);
+			if (verse.getReference().compareTo(lastVerse) < 0) {
+				versesToReturn.add(verse);
+			} else {
+				reachedLastVerse = true;
+			}
+		}
+		return versesToReturn;
 	}
 
 	@Override
