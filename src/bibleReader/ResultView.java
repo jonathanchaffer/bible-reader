@@ -18,7 +18,7 @@ import bibleReader.model.VerseList;
  * The display panel for the Bible Reader.
  * 
  * @author cusack
- * @author Jonathan Chaffer & Jason Gombas (2018)
+ * @author Jonathan Chaffer & Jacob Lahr (2018)
  */
 public class ResultView extends JPanel {
 	private BibleReaderModel bibleModel;
@@ -59,49 +59,6 @@ public class ResultView extends JPanel {
 	 * @param input
 	 */
 	public void updateSearch(String input) {
-		editorPane.setText(getSearchHTML(input));
-		editorPane.setCaretPosition(0);
-	}
-
-	/**
-	 * Updates the ResultView when searching a passage.
-	 * 
-	 * @param input
-	 */
-	public void updatePassage(String input) {
-		// TODO Implement getReferencesForPassage method in BibleReaderModel then change
-		// this to use the getPassageHTML method.
-		editorPane.setText("Passage search not yet implemented.");
-		editorPane.setCaretPosition(0);
-	}
-
-	/**
-	 * Updates the Stats JTextArea when search is pressed.
-	 * 
-	 * @param num
-	 * @param input
-	 */
-	private void updateStatsSearch(int num, String input) {
-		stats.setText("There are " + num + " verses containing " + input);
-	}
-
-	/**
-	 * Updates the Stats JTextArea when passage is pressed.
-	 * 
-	 * @param input
-	 */
-	private void updateStatsPassage(String input) {
-		stats.setText("You requested " + input);
-	}
-
-	/**
-	 * Returns the HTML text from a search.
-	 * 
-	 * @param input
-	 * @return A String which contains basic HTML code that formats search results
-	 *         in a table format.
-	 */
-	private String getSearchHTML(String input) {
 		StringBuffer html = new StringBuffer("");
 		int num = 0;
 		for (String version : bibleModel.getVersions()) {
@@ -121,22 +78,26 @@ public class ResultView extends JPanel {
 			}
 			html.append("</tbody></table><br>");
 		}
-		updateStatsSearch(num, input);
+		
+		stats.setText("There are " + num + " verses containing " + input);
+		
+		editorPane.setText(html.toString());
+		
 		if (num == 0) {
-			return "No Results";
+			stats.setText("No results.");
 		}
-		return html.toString();
+		
+		editorPane.setCaretPosition(0);
 	}
 
 	/**
-	 * Returns the HTML text from a passage search.
+	 * Updates the ResultView when searching a passage.
 	 * 
 	 * @param input
-	 * @return A String which contains basic HTML code that formats passage search
-	 *         results in a table format.
 	 */
-	private String getPassageHTML(String input) {
+	public void updatePassage(String input) {
 		StringBuffer html = new StringBuffer("");
+		int num = 0;
 		for (String version : bibleModel.getVersions()) {
 			Bible bible = bibleModel.getBible(version);
 			ReferenceList refs = bibleModel.getReferencesForPassage(input);
@@ -150,10 +111,19 @@ public class ResultView extends JPanel {
 				html.append("</td><td>");
 				html.append(bible.getVerse(ref).getText());
 				html.append("</td></tr>");
+				num += 1;
 			}
 			html.append("</tbody></table><br>");
 		}
-		updateStatsPassage(input);
-		return html.toString();
+		
+		stats.setText("You requested " + input + ". There are " + num + " results.");
+		
+		editorPane.setText(html.toString());
+		
+		if (num == 0) {
+			stats.setText("No results.");
+		}
+		
+		editorPane.setCaretPosition(0);
 	}
 }

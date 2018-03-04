@@ -352,7 +352,6 @@ public class ArrayListBible implements Bible {
 
 	@Override
 	public VerseList getVersesInclusive(Reference firstVerse, Reference lastVerse) {
-		// TODO could this reuse some of getVersesExclusive??
 		VerseList versesToReturn = new VerseList(this.getVersion(),
 				firstVerse.toString() + " to " + lastVerse.toString());
 		if (firstVerse.compareTo(lastVerse) > 0) {
@@ -364,25 +363,8 @@ public class ArrayListBible implements Bible {
 		if (!isValid(lastVerse)) {
 			return versesToReturn;
 		}
-		boolean reachedFirstVerse = false;
-		boolean reachedLastVerse = false;
-		int firstVerseIndex = -1;
-		for (int i = 0; reachedFirstVerse == false; i++) {
-			Verse verse = verses.get(i);
-			if (verse.getReference().equals(firstVerse)) {
-				reachedFirstVerse = true;
-				firstVerseIndex = i;
-			}
-		}
-		for (int i = firstVerseIndex; reachedLastVerse == false; i++) {
-			Verse verse = verses.get(i);
-			if (verse.getReference().compareTo(lastVerse) < 0) {
-				versesToReturn.add(verse);
-			} else {
-				versesToReturn.add(verse);
-				reachedLastVerse = true;
-			}
-		}
+		versesToReturn.addAll(getVersesExclusive(firstVerse, lastVerse));
+		versesToReturn.add(getVerse(lastVerse));
 		return versesToReturn;
 	}
 

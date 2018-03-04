@@ -11,6 +11,10 @@ import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -40,6 +44,7 @@ public class BibleReaderApp extends JFrame {
 	private JTextField inputField;
 	private JButton searchButton;
 	private JButton passageButton;
+	private JMenuBar menuBar;
 
 	/**
 	 * Set-up the bible application and create the GUI.
@@ -104,6 +109,35 @@ public class BibleReaderApp extends JFrame {
 		inputAndButtons.add(passageButton);
 
 		cont.add(resultView, BorderLayout.CENTER);
+
+		// Add a menu bar.
+		menuBar = new JMenuBar();
+
+		// Add a file menu with an exit item.
+		JMenu fileMenu = new JMenu("File", true);
+		JMenuItem exitItem = new JMenuItem("Exit");
+		exitItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		fileMenu.add(exitItem);
+		menuBar.add(fileMenu);
+
+		// Add a help menu with an about item.
+		JMenu helpMenu = new JMenu("Help", true);
+		JMenuItem aboutItem = new JMenuItem("About");
+		aboutItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(BibleReaderApp.this, "Bible Reader App by Jonathan Chaffer and Jacob Lahr, 2018");
+				;
+			}
+		});
+		helpMenu.add(aboutItem);
+		menuBar.add(helpMenu);
+
+		// set the menu bar
+		setJMenuBar(menuBar);
 	}
 
 }
