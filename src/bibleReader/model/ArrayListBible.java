@@ -174,15 +174,30 @@ public class ArrayListBible implements Bible {
 		ReferenceList refs = new ReferenceList();
 		if (firstVerse.compareTo(lastVerse) > 0) {
 			return refs;
-		}
-		if (!isValid(firstVerse)) {
+		} else if (!isValid(firstVerse)) {
+			return refs;
+		} else if (!isValid(lastVerse)) {
 			return refs;
 		}
-		if (!isValid(lastVerse)) {
-			return refs;
+		boolean reachedFirstVerse = false;
+		boolean reachedLastVerse = false;
+		int firstVerseIndex = -1;
+		for (int i = 0; reachedFirstVerse == false; i++) {
+			Verse verse = verses.get(i);
+			if (verse.getReference().equals(firstVerse)) {
+				reachedFirstVerse = true;
+				firstVerseIndex = i;
+			}
 		}
-		refs = getReferencesExclusive(firstVerse, lastVerse);
-		refs.add(lastVerse);
+		for (int i = firstVerseIndex; reachedLastVerse == false; i++) {
+			Verse verse = verses.get(i);
+			if (verse.getReference().compareTo(lastVerse) < 0) {
+				refs.add(verse.getReference());
+			} else {
+				refs.add(lastVerse);
+				reachedLastVerse = true;
+			}
+		}
 		return refs;
 	}
 
@@ -191,8 +206,7 @@ public class ArrayListBible implements Bible {
 		ReferenceList refs = new ReferenceList();
 		if (firstVerse.compareTo(lastVerse) > 0) {
 			return refs;
-		}
-		if (!isValid(firstVerse)) {
+		} else if (!isValid(firstVerse)) {
 			return refs;
 		}
 		boolean reachedFirstVerse = false;
@@ -222,17 +236,9 @@ public class ArrayListBible implements Bible {
 		if (book == null) {
 			return refs;
 		}
-		boolean reachedBook = false;
-		for (Verse verse : verses) {
-			if (verse.getReference().getBookOfBible().equals(book)) {
-				reachedBook = true;
-			}
-			if (reachedBook && verse.getReference().getBookOfBible().equals(book)) {
-				refs.add(verse.getReference());
-			} else if (reachedBook) {
-				return refs;
-			}
-		}
+		int lastChapter = getLastChapterNumber(book);
+		refs.addAll(getReferencesInclusive(new Reference(book, 1, 1),
+				new Reference(book, lastChapter, getLastVerseNumber(book, lastChapter))));
 		return refs;
 	}
 
@@ -242,22 +248,7 @@ public class ArrayListBible implements Bible {
 		if (book == null) {
 			return refs;
 		}
-		boolean reachedBook = false;
-		boolean reachedChapter = false;
-		for (Verse verse : verses) {
-			if (verse.getReference().getBookOfBible().equals(book)) {
-				reachedBook = true;
-				if (verse.getReference().getChapter() == chapter) {
-					reachedChapter = true;
-				}
-			}
-			if (reachedBook && reachedChapter && verse.getReference().getChapter() == chapter
-					&& verse.getReference().getBookOfBible().equals(book)) {
-				refs.add(verse.getReference());
-			} else if (reachedBook && reachedChapter) {
-				return refs;
-			}
-		}
+		refs.addAll(getReferencesInclusive(new Reference(book, chapter, 1), new Reference(book, chapter, getLastVerseNumber(book, chapter))));
 		return refs;
 	}
 
@@ -267,22 +258,7 @@ public class ArrayListBible implements Bible {
 		if (book == null) {
 			return refs;
 		}
-		boolean reachedBook = false;
-		boolean reachedFirstChapter = false;
-		for (Verse verse : verses) {
-			if (verse.getReference().getBookOfBible().equals(book)) {
-				reachedBook = true;
-				if (verse.getReference().getChapter() == chapter1) {
-					reachedFirstChapter = true;
-				}
-			}
-			if (reachedBook && reachedFirstChapter && verse.getReference().getChapter() <= chapter2
-					&& verse.getReference().getBookOfBible().equals(book)) {
-				refs.add(verse.getReference());
-			} else if (reachedBook && reachedFirstChapter) {
-				return refs;
-			}
-		}
+		refs.addAll(getReferencesInclusive(new Reference(book, chapter1, 1), new Reference(book, chapter2, getLastVerseNumber(book, chapter2))));
 		return refs;
 	}
 
@@ -292,27 +268,7 @@ public class ArrayListBible implements Bible {
 		if (book == null) {
 			return refs;
 		}
-		boolean reachedBook = false;
-		boolean reachedChapter = false;
-		boolean reachedFirstVerse = false;
-		for (Verse verse : verses) {
-			if (verse.getReference().getBookOfBible().equals(book)) {
-				reachedBook = true;
-				if (verse.getReference().getChapter() == chapter) {
-					reachedChapter = true;
-					if (verse.getReference().getVerse() == verse1) {
-						reachedFirstVerse = true;
-					}
-				}
-			}
-			if (reachedBook && reachedChapter && reachedFirstVerse && verse.getReference().getVerse() <= verse2
-					&& verse.getReference().getBookOfBible().equals(book)
-					&& verse.getReference().getChapter() == chapter) {
-				refs.add(verse.getReference());
-			} else if (reachedBook && reachedChapter && reachedFirstVerse) {
-				return refs;
-			}
-		}
+		refs.addAll(getReferencesInclusive(new Reference(book, chapter, verse1), new Reference(book, chapter, verse2)));
 		return refs;
 	}
 
@@ -322,31 +278,8 @@ public class ArrayListBible implements Bible {
 		if (book == null) {
 			return refs;
 		}
-		boolean reachedBook = false;
-		boolean reachedFirstChapter = false;
-		boolean reachedFirstVerse = false;
-		for (Verse verse : verses) {
-			if (verse.getReference().getBookOfBible().equals(book)) {
-				reachedBook = true;
-				if (verse.getReference().getChapter() == chapter1) {
-					reachedFirstChapter = true;
-					if (verse.getReference().getVerse() == verse1) {
-						reachedFirstVerse = true;
-					}
-				}
-			}
-			if (reachedBook && reachedFirstChapter && reachedFirstVerse
-					&& verse.getReference().getBookOfBible().equals(book)
-					&& verse.getReference().getChapter() <= chapter2) {
-				if (verse.getReference().getChapter() != chapter2) {
-					refs.add(verse.getReference());
-				} else if (verse.getReference().getVerse() <= verse2) {
-					refs.add(verse.getReference());
-				}
-			} else if (reachedBook && reachedFirstChapter && reachedFirstVerse) {
-				return refs;
-			}
-		}
+		refs.addAll(
+				getReferencesInclusive(new Reference(book, chapter1, verse1), new Reference(book, chapter2, verse2)));
 		return refs;
 	}
 
@@ -356,15 +289,30 @@ public class ArrayListBible implements Bible {
 				firstVerse.toString() + " to " + lastVerse.toString());
 		if (firstVerse.compareTo(lastVerse) > 0) {
 			return versesToReturn;
-		}
-		if (!isValid(firstVerse)) {
+		} else if (!isValid(firstVerse)) {
+			return versesToReturn;
+		} else if (!isValid(lastVerse)) {
 			return versesToReturn;
 		}
-		if (!isValid(lastVerse)) {
-			return versesToReturn;
+		boolean reachedFirstVerse = false;
+		boolean reachedLastVerse = false;
+		int firstVerseIndex = -1;
+		for (int i = 0; reachedFirstVerse == false; i++) {
+			Verse verse = verses.get(i);
+			if (verse.getReference().equals(firstVerse)) {
+				reachedFirstVerse = true;
+				firstVerseIndex = i;
+			}
 		}
-		versesToReturn.addAll(getVersesExclusive(firstVerse, lastVerse));
-		versesToReturn.add(getVerse(lastVerse));
+		for (int i = firstVerseIndex; reachedLastVerse == false; i++) {
+			Verse verse = verses.get(i);
+			if (verse.getReference().compareTo(lastVerse) < 0) {
+				versesToReturn.add(verse);
+			} else {
+				versesToReturn.add(getVerse(lastVerse));
+				reachedLastVerse = true;
+			}
+		}
 		return versesToReturn;
 	}
 
@@ -374,8 +322,7 @@ public class ArrayListBible implements Bible {
 				firstVerse.toString() + " to " + lastVerse.toString() + " excluding the final one");
 		if (firstVerse.compareTo(lastVerse) > 0) {
 			return versesToReturn;
-		}
-		if (!isValid(firstVerse)) {
+		} else if (!isValid(firstVerse)) {
 			return versesToReturn;
 		}
 		boolean reachedFirstVerse = false;
@@ -404,10 +351,8 @@ public class ArrayListBible implements Bible {
 		if (book != null) {
 			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
 			int lastChapter = getLastChapterNumber(book);
-			for (Verse verse : getVersesInclusive(new Reference(book, 1, 1),
-					new Reference(book, lastChapter, getLastVerseNumber(book, lastChapter)))) {
-				versesToReturn.add(verse);
-			}
+			versesToReturn.addAll(getVersesInclusive(new Reference(book, 1, 1),
+					new Reference(book, lastChapter, getLastVerseNumber(book, lastChapter))));
 			return versesToReturn;
 		}
 		return new VerseList(this.getVersion(), "");
@@ -417,10 +362,8 @@ public class ArrayListBible implements Bible {
 	public VerseList getChapter(BookOfBible book, int chapter) {
 		if (book != null) {
 			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
-			for (Verse verse : getVersesInclusive(new Reference(book, chapter, 1),
-					new Reference(book, chapter, getLastVerseNumber(book, chapter)))) {
-				versesToReturn.add(verse);
-			}
+			versesToReturn
+					.addAll(getVersesInclusive(new Reference(book, chapter, 1), new Reference(book, chapter, getLastVerseNumber(book, chapter))));
 			return versesToReturn;
 		}
 		return new VerseList(this.getVersion(), "");
@@ -430,10 +373,8 @@ public class ArrayListBible implements Bible {
 	public VerseList getChapters(BookOfBible book, int chapter1, int chapter2) {
 		if (book != null) {
 			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
-			for (Verse verse : getVersesInclusive(new Reference(book, chapter1, 1),
-					new Reference(book, chapter2, getLastVerseNumber(book, chapter2)))) {
-				versesToReturn.add(verse);
-			}
+			versesToReturn
+					.addAll(getVersesInclusive(new Reference(book, chapter1, 1), new Reference(book, chapter2, getLastVerseNumber(book, chapter2))));
 			return versesToReturn;
 		}
 		return new VerseList(this.getVersion(), "");
@@ -443,10 +384,8 @@ public class ArrayListBible implements Bible {
 	public VerseList getPassage(BookOfBible book, int chapter, int verse1, int verse2) {
 		if (book != null) {
 			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
-			for (Verse verse : getVersesInclusive(new Reference(book, chapter, verse1),
-					new Reference(book, chapter, verse2))) {
-				versesToReturn.add(verse);
-			}
+			versesToReturn.addAll(
+					getVersesInclusive(new Reference(book, chapter, verse1), new Reference(book, chapter, verse2)));
 			return versesToReturn;
 		}
 		return new VerseList(this.getVersion(), "");
@@ -456,10 +395,8 @@ public class ArrayListBible implements Bible {
 	public VerseList getPassage(BookOfBible book, int chapter1, int verse1, int chapter2, int verse2) {
 		if (book != null) {
 			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
-			for (Verse verse : getVersesInclusive(new Reference(book, chapter1, verse1),
-					new Reference(book, chapter2, verse2))) {
-				versesToReturn.add(verse);
-			}
+			versesToReturn.addAll(
+					getVersesInclusive(new Reference(book, chapter1, verse1), new Reference(book, chapter2, verse2)));
 			return versesToReturn;
 		}
 		return new VerseList(this.getVersion(), "");

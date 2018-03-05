@@ -160,26 +160,6 @@ public class BibleReaderModel implements MultiBibleModel {
 		return refs;
 	}
 
-	// -----------------------------------------------------------------------------
-	// The next set of methods are for use by the getReferencesForPassage method
-	// above.
-	// After it parses the input string it will call one of these.
-	//
-	// These methods should be somewhat easy to implement. They are kind of
-	// delegate
-	// methods in that they call a method on the Bible class to do most of the
-	// work.
-	// However, they need to do so for every version of the Bible stored in the
-	// model.
-	// and combine the results.
-	//
-	// Once you implement one of these, the rest of them should be fairly
-	// straightforward.
-	// Think before you code, get one to work, and then implement the rest based
-	// on
-	// that one.
-	// -----------------------------------------------------------------------------
-
 	@Override
 	public ReferenceList getVerseReferences(BookOfBible book, int chapter, int verse) {
 		Reference ref = new Reference(book, chapter, verse);
