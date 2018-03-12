@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Arrays;
 
 /**
  * The model of the Bible Reader. It stores the Bibles and has methods for
@@ -46,6 +47,7 @@ public class BibleReaderModel implements MultiBibleModel {
 		for (int i = 0; i < bibles.size(); i++) {
 			versionsToReturn[i] = bibles.get(i).getVersion();
 		}
+		Arrays.sort(versionsToReturn);
 		return versionsToReturn;
 	}
 
@@ -71,13 +73,13 @@ public class BibleReaderModel implements MultiBibleModel {
 
 	@Override
 	public ReferenceList getReferencesContaining(String words) {
-		ReferenceList refsToReturn = new ReferenceList();
+		TreeSet<Reference> refsToReturn = new TreeSet<Reference>();
 		for (Bible bible : bibles) {
 			for (Reference ref : bible.getReferencesContaining(words)) {
 				refsToReturn.add(ref);
 			}
 		}
-		return refsToReturn;
+		return new ReferenceList(refsToReturn);
 	}
 
 	@Override
@@ -94,7 +96,11 @@ public class BibleReaderModel implements MultiBibleModel {
 	public String getText(String version, Reference reference) {
 		for (Bible bible : bibles) {
 			if (bible.getVersion().equals(version)) {
-				return bible.getVerse(reference).getText();
+				if (bible.getVerse(reference) != null) {
+					return bible.getVerse(reference).getText();
+				} else {
+					return "";
+				}
 			}
 		}
 		return "";
@@ -102,7 +108,7 @@ public class BibleReaderModel implements MultiBibleModel {
 	
 	@Override
 	public ReferenceList getReferencesForPassage(String reference) {
-		ReferenceList refs = new ReferenceList();
+		TreeSet<Reference> refsToReturn = new TreeSet<Reference>();
 
 		BookOfBible book;
 		int chapter1;
@@ -117,48 +123,48 @@ public class BibleReaderModel implements MultiBibleModel {
 			// It matches.  Good.
 			book = BookOfBible.getBookOfBible(m.group(1));
 			if (book == null) {
-				return refs;
+				return new ReferenceList(refsToReturn);
 			}
 			other = m.group(2);
 			// Now we need to parse other to see what format it is.
 			try {
 				if (other.length() == 0) {
-					refs.addAll(getBookReferences(book));
+					refsToReturn.addAll(getBookReferences(book));
 				} else if ((m = oneChapterOneVersePattern.matcher(other)).matches()) {
 					chapter1 = Integer.parseInt(m.group(1));
 					verse1 = Integer.parseInt(m.group(2));
-					refs.addAll(getVerseReferences(book, chapter1, verse1));
+					refsToReturn.addAll(getVerseReferences(book, chapter1, verse1));
 				} else if ((m = oneChapterMultipleVersesPattern.matcher(other)).matches()) {
 					chapter1 = Integer.parseInt(m.group(1));
 					verse1 = Integer.parseInt(m.group(2));
 					verse2 = Integer.parseInt(m.group(3));
-					refs.addAll(getPassageReferences(book, chapter1, verse1, verse2));
+					refsToReturn.addAll(getPassageReferences(book, chapter1, verse1, verse2));
 				} else if ((m = oneChapterPattern.matcher(other)).matches()) {
 					chapter1 = Integer.parseInt(m.group(1));
-					refs.addAll(getChapterReferences(book, chapter1));
+					refsToReturn.addAll(getChapterReferences(book, chapter1));
 				} else if ((m = multipleChaptersPattern.matcher(other)).matches()) {
 					chapter1 = Integer.parseInt(m.group(1));
 					chapter2 = Integer.parseInt(m.group(2));
-					refs.addAll(getChapterReferences(book, chapter1, chapter2));
+					refsToReturn.addAll(getChapterReferences(book, chapter1, chapter2));
 				} else if ((m = multipleChaptersMultipleVersesPattern.matcher(other)).matches()) {
 					chapter1 = Integer.parseInt(m.group(1));
 					verse1 = Integer.parseInt(m.group(2));
 					chapter2 = Integer.parseInt(m.group(3));
 					verse2 = Integer.parseInt(m.group(4));
-					refs.addAll(getPassageReferences(book, chapter1, verse1, chapter2, verse2));
+					refsToReturn.addAll(getPassageReferences(book, chapter1, verse1, chapter2, verse2));
 				} else if ((m = strangeSyntaxPattern.matcher(other)).matches()) {
 					chapter1 = Integer.parseInt(m.group(1));
 					verse1 = 1;
 					chapter2 = Integer.parseInt(m.group(2));
 					verse2 = Integer.parseInt(m.group(3));
-					refs.addAll(getPassageReferences(book, chapter1, verse1, chapter2, verse2));
+					refsToReturn.addAll(getPassageReferences(book, chapter1, verse1, chapter2, verse2));
 				} else {
 				}
 			} catch (NumberFormatException e) {
-				return refs;
+				return new ReferenceList(refsToReturn);
 			}
 		}
-		return refs;
+		return new ReferenceList(refsToReturn);
 	}
 
 	@Override

@@ -1,0 +1,12 @@
+My Self-evaluation:
+-----------------------
+Time spent:    1.5 Hours
+-----------------------
+Expected Grade: 100/100%
+-----------------------
+Justification:
+Our code is organized and clear. It is well-documented
+and passes all the tests. Extraneous comments have been
+removed. GUI works as specified in the instructions. 
+File -> Open works, and it updates the ResultView 
+immediately after opening a file. And it doesn't crash.

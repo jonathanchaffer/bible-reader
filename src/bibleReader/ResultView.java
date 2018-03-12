@@ -18,7 +18,7 @@ import bibleReader.model.VerseList;
  * The display panel for the Bible Reader.
  * 
  * @author cusack
- * @author Jonathan Chaffer & Jacob Lahr (2018)
+ * @author Jonathan Chaffer, Jason Gombas, & Jacob Lahr (2018)
  */
 public class ResultView extends JPanel {
 	private BibleReaderModel bibleModel;
@@ -61,23 +61,27 @@ public class ResultView extends JPanel {
 	public void updateSearch(String input) {
 		StringBuffer html = new StringBuffer("");
 		int num = 0;
+		html.append("<table><tbody>");
+		html.append("<tr><td valign=\"top\" width=\"100\">Verse</td>");
 		for (String version : bibleModel.getVersions()) {
-			Bible bible = bibleModel.getBible(version);
-			VerseList verses = bible.getVersesContaining(input);
-			html.append("<table><tbody>");
-			html.append("<tr><td valign=\"top\" width=\"100\">Verse</td><td>");
+			html.append("<td>");
 			html.append(version);
 			html.append("</td>");
-			for (Verse verse : verses) {
-				html.append("<tr><td valign=\"top\">");
-				html.append(verse.getReference().toString());
-				html.append("</td><td>");
-				html.append(verse.getText());
-				html.append("</td></tr>");
-				num += 1;
-			}
-			html.append("</tbody></table><br>");
 		}
+		html.append("</tr>");
+		for (Reference ref : bibleModel.getReferencesContaining(input)) {
+			html.append("<tr><td valign=\"top\">");
+			html.append(ref.toString());
+			html.append("</td>");
+			for (String version : bibleModel.getVersions()) {
+				html.append("<td valign=\"top\">");
+				html.append(bibleModel.getText(version, ref));
+				html.append("</td>");
+			}
+			html.append("</tr>");
+			num += 1;
+		}
+		html.append("</tbody></table><br>");
 		
 		stats.setText("There are " + num + " verses containing " + input);
 		
@@ -98,23 +102,27 @@ public class ResultView extends JPanel {
 	public void updatePassage(String input) {
 		StringBuffer html = new StringBuffer("");
 		int num = 0;
+		html.append("<table><tbody>");
+		html.append("<tr><td valign=\"top\" width=\"100\">Verse</td>");
 		for (String version : bibleModel.getVersions()) {
-			Bible bible = bibleModel.getBible(version);
-			ReferenceList refs = bibleModel.getReferencesForPassage(input);
-			html.append("<table><tbody>");
-			html.append("<tr><td valign=\"top\" width=\"100\">Verse</td><td>");
+			html.append("<td>");
 			html.append(version);
 			html.append("</td>");
-			for (Reference ref : refs) {
-				html.append("<tr><td valign=\"top\">");
-				html.append(bible.getVerse(ref).getReference().toString());
-				html.append("</td><td>");
-				html.append(bible.getVerse(ref).getText());
-				html.append("</td></tr>");
-				num += 1;
-			}
-			html.append("</tbody></table><br>");
 		}
+		html.append("</tr>");
+		for (Reference ref : bibleModel.getReferencesForPassage(input)) {
+			html.append("<tr><td valign=\"top\">");
+			html.append(ref.toString());
+			html.append("</td>");
+			for (String version : bibleModel.getVersions()) {
+				html.append("<td valign=\"top\">");
+				html.append(bibleModel.getText(version, ref));
+				html.append("</td>");
+			}
+			html.append("</tr>");
+			num += 1;
+		}
+		html.append("</tbody></table><br>");
 		
 		stats.setText("You requested " + input + ". There are " + num + " results.");
 		
