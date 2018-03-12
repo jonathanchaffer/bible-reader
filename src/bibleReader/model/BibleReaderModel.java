@@ -14,7 +14,24 @@ import java.util.regex.Pattern;
  */
 public class BibleReaderModel implements MultiBibleModel {
 	private ArrayList<Bible> bibles;
-
+	
+	// regex code for a number with/without spaces on either side
+	public static final String number = "\\s*(\\d+)\\s*";
+	// pattern for the book
+	public static Pattern bookPattern = Pattern.compile("((?:1|2|3|I|II|III)\\s*\\w+|(?:\\s*[a-zA-Z]+)+)\\s*(.*)");
+	// pattern for one chapter and one verse, e.g. "3:16"
+	public static Pattern oneChapterOneVersePattern = Pattern.compile(number + ":" + number);
+	// pattern for one chapter and multiple verses, e.g. "3:16-17"
+	public static Pattern oneChapterMultipleVersesPattern = Pattern.compile(number + ":" + number + "-" + number);
+	// pattern for one chapter, e.g. "1"
+	public static Pattern oneChapterPattern = Pattern.compile(number);
+	// pattern for multiple chapters, e.g. "1-3"
+	public static Pattern multipleChaptersPattern = Pattern.compile(number + "(?:-)" + number);
+	// pattern for multiple chapters and multiple verses, e.g. "1:5-3:4"
+	public static Pattern multipleChaptersMultipleVersesPattern = Pattern.compile(number + ":" + number + "-" + number + ":" + number);
+	// pattern for weird syntax, e.g. "2-3:16"
+	public static Pattern strangeSyntaxPattern = Pattern.compile(number + "-" + number + ":" + number);
+	
 	/**
 	 * Default constructor. You probably need to instantiate objects and do
 	 * other assorted things to set up the model.
@@ -82,22 +99,6 @@ public class BibleReaderModel implements MultiBibleModel {
 		}
 		return "";
 	}
-	// regex code for a number with/without spaces on either side
-	public static final String number = "\\s*(\\d+)\\s*";
-	// pattern for the book
-	public static Pattern bookPattern = Pattern.compile("((?:1|2|3|I|II|III)\\s*\\w+|(?:\\s*[a-zA-Z]+)+)\\s*(.*)");
-	// pattern for one chapter and one verse, e.g. "3:16"
-	public static Pattern oneChapterOneVersePattern = Pattern.compile(number + ":" + number);
-	// pattern for one chapter and multiple verses, e.g. "3:16-17"
-	public static Pattern oneChapterMultipleVersesPattern = Pattern.compile(number + ":" + number + "-" + number);
-	// pattern for one chapter, e.g. "1"
-	public static Pattern oneChapterPattern = Pattern.compile(number);
-	// pattern for multiple chapters, e.g. "1-3"
-	public static Pattern multipleChaptersPattern = Pattern.compile(number + "(?:-)" + number);
-	// pattern for multiple chapters and multiple verses, e.g. "1:5-3:4"
-	public static Pattern multipleChaptersMultipleVersesPattern = Pattern.compile(number + ":" + number + "-" + number + ":" + number);
-	// pattern for weird syntax, e.g. "2-3:16"
-	public static Pattern strangeSyntaxPattern = Pattern.compile(number + "-" + number + ":" + number);
 	
 	@Override
 	public ReferenceList getReferencesForPassage(String reference) {

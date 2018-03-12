@@ -305,7 +305,7 @@ public class Stage08BibleIOTest {
 
 		// Did we get the right abbreviation/title?
 		assertEquals("ESV", versesFromFile.getVersion());
-		assertEquals("The Holy Bible, English Standard Version, copyright © 2001 by Crossway Bibles, "
+		assertEquals("The Holy Bible, English Standard Version, copyright ï¿½ 2001 by Crossway Bibles, "
 				+ "a publishing ministry of Good News Publishers.", versesFromFile.getDescription());
 
 		// Do we have the right number of verses?

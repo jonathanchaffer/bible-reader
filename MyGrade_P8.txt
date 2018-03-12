@@ -1,0 +1,11 @@
+My Self-evaluation:
+-----------------------
+Time spent:    3 Hours
+-----------------------
+Expected Grade: 100/100%
+-----------------------
+Justification:
+My code is organized and clear. It is well-documented
+and passes all the tests. Extraneous comments have been
+removed. All the methods in BibleIO are implemented 
+correctly and efficiently.
