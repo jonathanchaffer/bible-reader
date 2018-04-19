@@ -1,0 +1,11 @@
+My Self-evaluation:
+-----------------------
+Time spent:    5 Hours
+-----------------------
+Expected Grade: 100/100%
+-----------------------
+Justification:
+My code is organized and clear. It is well-documented
+and passes all the tests. GUI works as specified. Next
+and Previous buttons are implemented correctly. The
+ResultView shows only 20 results per page.

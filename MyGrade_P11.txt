@@ -1,0 +1,12 @@
+My Self-evaluation:
+-----------------------
+Time spent:    1.5 Hours
+-----------------------
+Expected Grade: 100/100%
+-----------------------
+Justification:
+My code is organized and clear. It is well-documented
+and passes all the tests. The TreeMapBible is
+implemented correctly. Methods that iterate through
+all the verses in the Bible now use a Set of Map.Entry
+instead of using a VerseList of Verse.

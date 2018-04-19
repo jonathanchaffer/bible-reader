@@ -54,10 +54,8 @@ public class ArrayListBible implements Bible {
 
 	@Override
 	public String getVerseText(Reference ref) {
-		for (Verse verse : verses) {
-			if (verse.getReference().equals(ref)) {
-				return verse.getText();
-			}
+		if (getVerse(ref) != null) {
+			return getVerse(ref).getText();
 		}
 		return null;
 	}
@@ -193,36 +191,6 @@ public class ArrayListBible implements Bible {
 		}
 		return results;
 	}
-
-//		ReferenceList refs = new ReferenceList();
-//		if (firstVerse.compareTo(lastVerse) > 0) {
-//			return refs;
-//		} else if (!isValid(firstVerse)) {
-//			return refs;
-//		} else if (!isValid(lastVerse)) {
-//			return refs;
-//		}
-//		boolean reachedFirstVerse = false;
-//		boolean reachedLastVerse = false;
-//		int firstVerseIndex = -1;
-//		for (int i = 0; reachedFirstVerse == false; i++) {
-//			Verse verse = verses.get(i);
-//			if (verse.getReference().equals(firstVerse)) {
-//				reachedFirstVerse = true;
-//				firstVerseIndex = i;
-//			}
-//		}
-//		for (int i = firstVerseIndex; reachedLastVerse == false; i++) {
-//			Verse verse = verses.get(i);
-//			if (verse.getReference().compareTo(lastVerse) < 0) {
-//				refs.add(verse.getReference());
-//			} else {
-//				refs.add(lastVerse);
-//				reachedLastVerse = true;
-//			}
-//		}
-//		return refs;
-//	}
 
 	@Override
 	public ReferenceList getReferencesExclusive(Reference firstVerse, Reference lastVerse) {

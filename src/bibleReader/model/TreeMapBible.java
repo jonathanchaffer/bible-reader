@@ -9,228 +9,347 @@ import java.util.TreeMap;
  * A class that stores a version of the Bible.
  * 
  * @author Chuck Cusack (Provided the interface)
- * @author ? (provided the implementation)
+ * @author Jonathan Chaffer (provided the implementation)
  */
 public class TreeMapBible implements Bible {
 
 	// The Fields
-	private String						version;
-	private TreeMap<Reference, String>	theVerses;
-
-	// Or replace the above with:
-	// private TreeMap<Reference, Verse> theVerses;
-	// Add more fields as necessary.
+	private String version;
+	private String title;
+	private TreeMap<Reference, String> verses;
 
 	/**
 	 * Create a new Bible with the given verses.
 	 * 
-	 * @param version the version of the Bible (e.g. ESV, KJV, ASV, NIV).
-	 * @param verses All of the verses of this version of the Bible.
+	 * @param verses
+	 *            All of the verses of this version of the Bible.
 	 */
 	public TreeMapBible(VerseList verses) {
-		// TODO Implement me: Stage 11
+		this.verses = new TreeMap<Reference, String>();
+		for (Verse verse : verses) {
+			this.verses.put(verse.getReference(), verse.getText());
+		}
+		this.version = verses.getVersion();
+		this.title = verses.getDescription();
 	}
 
 	@Override
 	public int getNumberOfVerses() {
-		// TODO Implement me: Stage 11
-		return 0;
+		return verses.size();
 	}
 
 	@Override
 	public VerseList getAllVerses() {
-		// TODO Implement me: Stage 11
-		return null;
+		VerseList allVerses = new VerseList(getVersion(), getTitle());
+		Set<Map.Entry<Reference, String>> entries = verses.entrySet();
+		for (Map.Entry<Reference, String> entry : entries) {
+			allVerses.add(new Verse(entry.getKey(), entry.getValue()));
+		}
+		return allVerses;
 	}
 
 	@Override
 	public String getVersion() {
-		// TODO Implement me: Stage 11
-		return "";
+		return version;
 	}
 
 	@Override
 	public String getTitle() {
-		// TODO Implement me: Stage 11
-		return null;
+		return title;
 	}
 
 	@Override
 	public boolean isValid(Reference ref) {
-		// TODO Implement me: Stage 11
+		Set<Map.Entry<Reference, String>> entries = verses.entrySet();
+		for (Map.Entry<Reference, String> entry : entries) {
+			if (entry.getKey().equals(ref)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
-	public String getVerseText(Reference r) {
-		// TODO Implement me: Stage 11
+	public String getVerseText(Reference ref) {
+		if (getVerse(ref) != null) {
+			return getVerse(ref).getText();
+		}
 		return null;
 	}
 
 	@Override
-	public Verse getVerse(Reference r) {
-		// TODO Implement me: Stage 11
+	public Verse getVerse(Reference ref) {
+		Set<Map.Entry<Reference, String>> entries = verses.entrySet();
+		for (Map.Entry<Reference, String> entry : entries) {
+			if (entry.getKey().equals(ref)) {
+				return new Verse(entry.getKey(), entry.getValue());
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public Verse getVerse(BookOfBible book, int chapter, int verse) {
-		// TODO Implement me: Stage 11
-		return null;
+		Reference ref = new Reference(book, chapter, verse);
+		return getVerse(ref);
 	}
-
-	// ---------------------------------------------------------------------------------------------
-	// The following part of this class should be implemented for stage 4.
-	//
-	// For Stage 11 the first two methods below will be implemented as specified in the comments.
-	// Do not over think these methods. All three should be pretty straightforward to implement.
-	// For Stage 8 (give or take a 1 or 2) you will re-implement them so they work better.
-	// At that stage you will create another class to facilitate searching and use it here.
-	// (Essentially these two methods will be delegate methods.)
-	// ---------------------------------------------------------------------------------------------
 
 	@Override
 	public VerseList getVersesContaining(String phrase) {
-		// TODO Implement me: Stage 11
-		return null;
+		VerseList versesToReturn = new VerseList(getVersion(), phrase);
+		phrase = phrase.toLowerCase();
+		if (!phrase.equals("")) {
+			Set<Map.Entry<Reference, String>> entries = verses.entrySet();
+			for (Map.Entry<Reference, String> entry : entries) {
+				if (entry.getValue().toLowerCase().contains(phrase)) {
+					versesToReturn.add(new Verse(entry.getKey(), entry.getValue()));
+				}
+			}
+		}
+		return versesToReturn;
 	}
 
 	@Override
 	public ReferenceList getReferencesContaining(String phrase) {
-		// TODO Implement me: Stage 11
-		return null;
+		ReferenceList refsToReturn = new ReferenceList();
+		phrase = phrase.toLowerCase();
+		if (!phrase.equals("")) {
+			Set<Map.Entry<Reference, String>> entries = verses.entrySet();
+			for (Map.Entry<Reference, String> entry : entries) {
+				if (entry.getValue().toLowerCase().contains(phrase)) {
+					refsToReturn.add(entry.getKey());
+				}
+			}
+		}
+		return refsToReturn;
 	}
 
 	@Override
 	public VerseList getVerses(ReferenceList references) {
-		// TODO Implement me: Stage 11
-		return null;
+		VerseList versesToReturn = new VerseList(getVersion(), "Arbitrary list of Verses");
+		for (Reference ref : references) {
+			versesToReturn.add(getVerse(ref));
+		}
+		return versesToReturn;
 	}
-
-	// ---------------------------------------------------------------------------------------------
-	// The following part of this class should be implemented for Stage 11.
-	//
-	// HINT: Do not reinvent the wheel. Some of these methods can be implemented by looking up
-	// one or two things and calling another method to do the bulk of the work.
-	// ---------------------------------------------------------------------------------------------
 
 	@Override
 	public int getLastVerseNumber(BookOfBible book, int chapter) {
-		// TODO Implement me: Stage 11
-		return -1;
+		int num = -1;
+		if (book == null) {
+			return num;
+		}
+		boolean reachedBook = false;
+		boolean reachedChapter = false;
+		Set<Map.Entry<Reference, String>> entries = verses.entrySet();
+		for (Map.Entry<Reference, String> entry : entries) {
+			if (entry.getKey().getBookOfBible().equals(book)) {
+				reachedBook = true;
+				if (entry.getKey().getChapter() == chapter) {
+					reachedChapter = true;
+				}
+			}
+			if (reachedBook && reachedChapter && entry.getKey().getChapter() == chapter
+					&& entry.getKey().getBookOfBible().equals(book)) {
+				num = entry.getKey().getVerse();
+			} else if (reachedBook && reachedChapter) {
+				return num;
+			}
+		}
+		return num;
 	}
 
 	@Override
 	public int getLastChapterNumber(BookOfBible book) {
-		// TODO Implement me: Stage 11
-		return -1;
+		int num = -1;
+		if (book == null) {
+			return num;
+		}
+		boolean reachedBook = false;
+		Set<Map.Entry<Reference, String>> entries = verses.entrySet();
+		for (Map.Entry<Reference, String> entry : entries) {
+			if (entry.getKey().getBookOfBible().equals(book)) {
+				reachedBook = true;
+			}
+			if (reachedBook && entry.getKey().getBookOfBible().equals(book)) {
+				num = entry.getKey().getChapter();
+			} else if (reachedBook) {
+				return num;
+			}
+		}
+		return num;
 	}
 
 	@Override
 	public ReferenceList getReferencesInclusive(Reference firstVerse, Reference lastVerse) {
-		// TODO Implement me: Stage 11
-		return null;
+		ReferenceList results = new ReferenceList();
+		if (firstVerse.compareTo(lastVerse) > 0) {
+			return results;
+		}
+		SortedMap<Reference, String> s = verses.subMap(firstVerse, lastVerse);
+		Set<Map.Entry<Reference, String>> entries = s.entrySet();
+		for (Map.Entry<Reference, String> entry : entries) {
+			results.add(entry.getKey());
+		}
+		if (isValid(lastVerse)) {
+			results.add(lastVerse);
+		}
+		return results;
 	}
 
 	@Override
 	public ReferenceList getReferencesExclusive(Reference firstVerse, Reference lastVerse) {
-		// TODO Implement me: Stage 11
-		return null;
+		ReferenceList results = new ReferenceList();
+		if (firstVerse.compareTo(lastVerse) > 0) {
+			return results;
+		}
+		SortedMap<Reference, String> s = verses.subMap(firstVerse, lastVerse);
+		Set<Map.Entry<Reference, String>> entries = s.entrySet();
+		for (Map.Entry<Reference, String> entry : entries) {
+			results.add(entry.getKey());
+		}
+		return results;
 	}
 
 	@Override
 	public ReferenceList getReferencesForBook(BookOfBible book) {
-		// TODO Implement me: Stage 11
-		return null;
+		ReferenceList refs = new ReferenceList();
+		if (book == null) {
+			return refs;
+		}
+		int lastChapter = getLastChapterNumber(book);
+		refs.addAll(getReferencesInclusive(new Reference(book, 1, 1),
+				new Reference(book, lastChapter, getLastVerseNumber(book, lastChapter))));
+		return refs;
 	}
 
 	@Override
 	public ReferenceList getReferencesForChapter(BookOfBible book, int chapter) {
-		// TODO Implement me: Stage 11
-		return null;
+		ReferenceList refs = new ReferenceList();
+		if (book == null) {
+			return refs;
+		}
+		refs.addAll(getReferencesInclusive(new Reference(book, chapter, 1),
+				new Reference(book, chapter, getLastVerseNumber(book, chapter))));
+		return refs;
 	}
 
 	@Override
 	public ReferenceList getReferencesForChapters(BookOfBible book, int chapter1, int chapter2) {
-		// TODO Implement me: Stage 11
-		return null;
+		ReferenceList refs = new ReferenceList();
+		if (book == null) {
+			return refs;
+		}
+		refs.addAll(getReferencesInclusive(new Reference(book, chapter1, 1),
+				new Reference(book, chapter2, getLastVerseNumber(book, chapter2))));
+		return refs;
 	}
 
 	@Override
 	public ReferenceList getReferencesForPassage(BookOfBible book, int chapter, int verse1, int verse2) {
-		// TODO Implement me: Stage 11
-		return null;
+		ReferenceList refs = new ReferenceList();
+		if (book == null) {
+			return refs;
+		}
+		refs.addAll(getReferencesInclusive(new Reference(book, chapter, verse1), new Reference(book, chapter, verse2)));
+		return refs;
 	}
 
 	@Override
 	public ReferenceList getReferencesForPassage(BookOfBible book, int chapter1, int verse1, int chapter2, int verse2) {
-		// TODO Implement me: Stage 11
-		return null;
+		ReferenceList refs = new ReferenceList();
+		if (book == null) {
+			return refs;
+		}
+		refs.addAll(
+				getReferencesInclusive(new Reference(book, chapter1, verse1), new Reference(book, chapter2, verse2)));
+		return refs;
 	}
 
 	@Override
 	public VerseList getVersesInclusive(Reference firstVerse, Reference lastVerse) {
-		// TODO Implement me: Stage 11
-		return null;
+		VerseList versesToReturn = new VerseList(getVersion(), firstVerse + "-" + lastVerse);
+		if (firstVerse.compareTo(lastVerse) > 0) {
+			return versesToReturn;
+		}
+		SortedMap<Reference, String> s = verses.subMap(firstVerse, lastVerse);
+		Set<Map.Entry<Reference, String>> entries = s.entrySet();
+		for (Map.Entry<Reference, String> entry : entries) {
+			versesToReturn.add(new Verse(entry.getKey(), entry.getValue()));
+		}
+		if (isValid(lastVerse)) {
+			versesToReturn.add(new Verse(lastVerse, getVerseText(lastVerse)));
+		}
+		return versesToReturn;
 	}
 
 	@Override
 	public VerseList getVersesExclusive(Reference firstVerse, Reference lastVerse) {
-		// Implementation of this method provided by Chuck Cusack.
-		// This is provided so you have an example to help you get started
-		// with the other methods.
-
-		// We will store the resulting verses here. We copy the version from
-		// this Bible and set the description to be the passage that was searched for.
-		VerseList someVerses = new VerseList(getVersion(), firstVerse + "-" + lastVerse);
-
-		// Make sure the references are in the correct order. If not, return an empty list.
+		VerseList versesToReturn = new VerseList(getVersion(), firstVerse + "-" + lastVerse);
 		if (firstVerse.compareTo(lastVerse) > 0) {
-			return someVerses;
+			return versesToReturn;
 		}
-		// Return the portion of the TreeMap that contains the verses between
-		// the first and the last, not including the last.
-		SortedMap<Reference, String> s = theVerses.subMap(firstVerse, lastVerse);
-
-		// Get the entries from the map so we can iterate through them.
-		Set<Map.Entry<Reference, String>> mySet = s.entrySet();
-
-		// Iterate through the set and put the verses in the VerseList.
-		for (Map.Entry<Reference, String> element : mySet) {
-			Verse aVerse = new Verse(element.getKey(), element.getValue());
-			someVerses.add(aVerse);
+		SortedMap<Reference, String> s = verses.subMap(firstVerse, lastVerse);
+		Set<Map.Entry<Reference, String>> entries = s.entrySet();
+		for (Map.Entry<Reference, String> entry : entries) {
+			versesToReturn.add(new Verse(entry.getKey(), entry.getValue()));
 		}
-		return someVerses;
+		return versesToReturn;
 	}
 
 	@Override
 	public VerseList getBook(BookOfBible book) {
-		// TODO Implement me: Stage 11
-		return null;
+		if (book != null) {
+			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
+			int lastChapter = getLastChapterNumber(book);
+			versesToReturn.addAll(getVersesInclusive(new Reference(book, 1, 1),
+					new Reference(book, lastChapter, getLastVerseNumber(book, lastChapter))));
+			return versesToReturn;
+		}
+		return new VerseList(this.getVersion(), "");
 	}
 
 	@Override
 	public VerseList getChapter(BookOfBible book, int chapter) {
-		// TODO Implement me: Stage 11
-		return null;
+		if (book != null) {
+			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
+			versesToReturn.addAll(getVersesInclusive(new Reference(book, chapter, 1),
+					new Reference(book, chapter, getLastVerseNumber(book, chapter))));
+			return versesToReturn;
+		}
+		return new VerseList(this.getVersion(), "");
 	}
 
 	@Override
 	public VerseList getChapters(BookOfBible book, int chapter1, int chapter2) {
-		// TODO Implement me: Stage 11
-		return null;
+		if (book != null) {
+			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
+			versesToReturn.addAll(getVersesInclusive(new Reference(book, chapter1, 1),
+					new Reference(book, chapter2, getLastVerseNumber(book, chapter2))));
+			return versesToReturn;
+		}
+		return new VerseList(this.getVersion(), "");
 	}
 
 	@Override
 	public VerseList getPassage(BookOfBible book, int chapter, int verse1, int verse2) {
-		// TODO Implement me: Stage 11
-		return null;
+		if (book != null) {
+			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
+			versesToReturn.addAll(
+					getVersesInclusive(new Reference(book, chapter, verse1), new Reference(book, chapter, verse2)));
+			return versesToReturn;
+		}
+		return new VerseList(this.getVersion(), "");
 	}
 
 	@Override
 	public VerseList getPassage(BookOfBible book, int chapter1, int verse1, int chapter2, int verse2) {
-		// TODO Implement me: Stage 11
-		return null;
+		if (book != null) {
+			VerseList versesToReturn = new VerseList(this.getVersion(), book.toString());
+			versesToReturn.addAll(
+					getVersesInclusive(new Reference(book, chapter1, verse1), new Reference(book, chapter2, verse2)));
+			return versesToReturn;
+		}
+		return new VerseList(this.getVersion(), "");
 	}
-
 }

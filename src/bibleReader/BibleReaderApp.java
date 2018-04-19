@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 
 import bibleReader.model.ArrayListBible;
 import bibleReader.model.Bible;
+import bibleReader.model.BibleFactory;
 import bibleReader.model.BibleReaderModel;
 import bibleReader.model.VerseList;
 
@@ -26,72 +27,84 @@ import bibleReader.model.VerseList;
  * The main class for the Bible Reader Application.
  * 
  * @author cusack
- * @author Jonathan Chaffer, Jason Gombas, & Jacob Lahr (2018)
+ * @author Jonathan Chaffer
  */
 public class BibleReaderApp extends JFrame {
-	public static final int NONE = 0;
-	public static final int SEARCH = 1;
-	public static final int PASSAGE = 2;
+	// window size constants
+	public static final int width = 750;
+	public static final int height = 500;
 
-	public static final int width = 600;
-	public static final int height = 600;
+	// GUI components
+	private BibleReaderModel model;
+	public ResultView resultView;
+	public JTextField inputField;
+	public JButton searchButton;
+	public JButton passageButton;
+	private JMenuBar menuBar;
+	private JFileChooser fileChooser;
 
+	/**
+	 * Start the application.
+	 * 
+	 * @param args
+	 *            Main method arguments.
+	 */
 	public static void main(String[] args) {
 		new BibleReaderApp();
 	}
 
-	// Fields
-	private BibleReaderModel model;
-	private ResultView resultView;
-	private JTextField inputField;
-	private JButton searchButton;
-	private JButton passageButton;
-	private JMenuBar menuBar;
-	private JFileChooser fileChooser;
-	private int lastClicked = NONE;
-	private String lastInput = "";
-
 	/**
-	 * Set-up the bible application and create the GUI.
+	 * Set up the bible application and create the GUI.
 	 */
 	public BibleReaderApp() {
 		model = new BibleReaderModel();
-		File kjvFile = new File("kjv.atv");
 
-		VerseList verses = BibleIO.readBible(kjvFile);
-		Bible kjv = new ArrayListBible(verses);
+		// add kjv
+		File kjvFile = new File("kjv.atv");
+		VerseList kjvVerses = BibleIO.readBible(kjvFile);
+		Bible kjv = BibleFactory.createBible(kjvVerses);
 		model.addBible(kjv);
 
+		// add asv
+		File asvFile = new File("asv.xmv");
+		VerseList asvVerses = BibleIO.readBible(asvFile);
+		Bible asv = BibleFactory.createBible(asvVerses);
+		model.addBible(asv);
+
+		// add esv
+		File esvFile = new File("esv.atv");
+		VerseList esvVerses = BibleIO.readBible(esvFile);
+		Bible esv = BibleFactory.createBible(esvVerses);
+		model.addBible(esv);
+
+		// window title
 		setTitle("Bible Reader");
-
+		// result view
 		resultView = new ResultView(model);
-		inputField = new JTextField("", 20);
-		searchButton = new JButton("Search");
-		passageButton = new JButton("Passage");
+		// file chooser
 		fileChooser = new JFileChooser();
+		// buttons and text fields
+		inputField = new JTextField("", 20);
+		inputField.setName("InputTextField");
+		searchButton = new JButton("Search");
+		searchButton.setName("SearchButton");
+		passageButton = new JButton("Passage");
+		passageButton.setName("PassageButton");
 
-		// Add action listeners to inputField, searchButton, and passageButton
+		// add action listeners to inputField, searchButton, and passageButton
 		inputField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				resultView.updateSearch(inputField.getText());
-				lastClicked = SEARCH;
-				lastInput = inputField.getText();
+				resultView.updateSearchResults(inputField.getText());
 			}
 		});
-
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				resultView.updateSearch(inputField.getText());
-				lastClicked = SEARCH;
-				lastInput = inputField.getText();
+				resultView.updateSearchResults(inputField.getText());
 			}
 		});
-
 		passageButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				resultView.updatePassage(inputField.getText());
-				lastClicked = PASSAGE;
-				lastInput = inputField.getText();
+				resultView.updatePassageResults(inputField.getText());
 			}
 		});
 
@@ -99,7 +112,7 @@ public class BibleReaderApp extends JFrame {
 		pack();
 		setSize(width, height);
 
-		// So the application exits when you click the "x".
+		// exit when you click the "x".
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
@@ -108,41 +121,43 @@ public class BibleReaderApp extends JFrame {
 	 * Set up the main GUI.
 	 */
 	private void setupGUI() {
+		// make the layout
 		Container cont = getContentPane();
 		cont.setLayout(new BorderLayout());
-
 		JPanel inputAndButtons = new JPanel();
 		inputAndButtons.setLayout(new FlowLayout());
 		cont.add(inputAndButtons, BorderLayout.NORTH);
 
+		// add input and search buttons to the top area
 		inputAndButtons.add(inputField);
 		inputAndButtons.add(searchButton);
 		inputAndButtons.add(passageButton);
 
+		// add result view to the center
 		cont.add(resultView, BorderLayout.CENTER);
 
-		// Add a menu bar.
+		// add a menu bar
 		menuBar = new JMenuBar();
 
-		// Add a file menu with an exit item.
+		// add a file menu with an exit and open item
 		JMenu fileMenu = new JMenu("File", true);
-		JMenuItem exitItem = new JMenuItem("Exit");
-		exitItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
-		fileMenu.add(exitItem);
 		JMenuItem openItem = new JMenuItem("Open");
 		openItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				openFile();
 			}
 		});
+		JMenuItem exitItem = new JMenuItem("Exit");
+		exitItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
 		fileMenu.add(openItem);
+		fileMenu.add(exitItem);
 		menuBar.add(fileMenu);
 
-		// Add a help menu with an about item.
+		// add a help menu with an about item
 		JMenu helpMenu = new JMenu("Help", true);
 		JMenuItem aboutItem = new JMenuItem("About");
 		aboutItem.addActionListener(new ActionListener() {
@@ -155,7 +170,7 @@ public class BibleReaderApp extends JFrame {
 		helpMenu.add(aboutItem);
 		menuBar.add(helpMenu);
 
-		// set the menu bar
+		// set the window's menu bar
 		setJMenuBar(menuBar);
 	}
 
@@ -174,10 +189,10 @@ public class BibleReaderApp extends JFrame {
 			} else {
 				// Apparently all is well, so go ahead and read the file.
 				model.addBible(new ArrayListBible(BibleIO.readBible(file)));
-				if (lastClicked == SEARCH) {
-					resultView.updateSearch(lastInput);
-				} else if (lastClicked == PASSAGE) {
-					resultView.updatePassage(lastInput);
+				if (resultView.getLastSearchType() == ResultView.WORD) {
+					resultView.updateSearchResults(resultView.getLastInput());
+				} else if (resultView.getLastSearchType() == ResultView.PASSAGE) {
+					resultView.updatePassageResults(resultView.getLastInput());
 				}
 			}
 		}

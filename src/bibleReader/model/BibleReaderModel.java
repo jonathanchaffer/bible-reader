@@ -1,10 +1,11 @@
 package bibleReader.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Arrays;
 
 /**
  * The model of the Bible Reader. It stores the Bibles and has methods for
@@ -14,8 +15,8 @@ import java.util.Arrays;
  * @author Jonathan Chaffer & Jacob Lahr (2018)
  */
 public class BibleReaderModel implements MultiBibleModel {
-	private ArrayList<Bible> bibles;
-	
+	private HashMap<Bible, Concordance> bibles;
+
 	// regex code for a number with/without spaces on either side
 	public static final String number = "\\s*(\\d+)\\s*";
 	// pattern for the book
@@ -29,23 +30,24 @@ public class BibleReaderModel implements MultiBibleModel {
 	// pattern for multiple chapters, e.g. "1-3"
 	public static Pattern multipleChaptersPattern = Pattern.compile(number + "(?:-)" + number);
 	// pattern for multiple chapters and multiple verses, e.g. "1:5-3:4"
-	public static Pattern multipleChaptersMultipleVersesPattern = Pattern.compile(number + ":" + number + "-" + number + ":" + number);
+	public static Pattern multipleChaptersMultipleVersesPattern = Pattern
+			.compile(number + ":" + number + "-" + number + ":" + number);
 	// pattern for weird syntax, e.g. "2-3:16"
 	public static Pattern strangeSyntaxPattern = Pattern.compile(number + "-" + number + ":" + number);
-	
+
 	/**
 	 * Default constructor. You probably need to instantiate objects and do
 	 * other assorted things to set up the model.
 	 */
 	public BibleReaderModel() {
-		bibles = new ArrayList<Bible>();
+		bibles = new HashMap<Bible, Concordance>();
 	}
 
 	@Override
 	public String[] getVersions() {
 		String[] versionsToReturn = new String[bibles.size()];
 		for (int i = 0; i < bibles.size(); i++) {
-			versionsToReturn[i] = bibles.get(i).getVersion();
+			versionsToReturn[i] = bibles.keySet().toArray(new Bible[bibles.size()])[i].getVersion();
 		}
 		Arrays.sort(versionsToReturn);
 		return versionsToReturn;
@@ -58,12 +60,12 @@ public class BibleReaderModel implements MultiBibleModel {
 
 	@Override
 	public void addBible(Bible bible) {
-		bibles.add(bible);
+		bibles.put(bible, BibleFactory.createConcordance(bible));
 	}
 
 	@Override
 	public Bible getBible(String version) {
-		for (Bible bible : bibles) {
+		for (Bible bible : bibles.keySet()) {
 			if (bible.getVersion().equals(version)) {
 				return bible;
 			}
@@ -74,7 +76,7 @@ public class BibleReaderModel implements MultiBibleModel {
 	@Override
 	public ReferenceList getReferencesContaining(String words) {
 		TreeSet<Reference> refsToReturn = new TreeSet<Reference>();
-		for (Bible bible : bibles) {
+		for (Bible bible : bibles.keySet()) {
 			for (Reference ref : bible.getReferencesContaining(words)) {
 				refsToReturn.add(ref);
 			}
@@ -84,7 +86,7 @@ public class BibleReaderModel implements MultiBibleModel {
 
 	@Override
 	public VerseList getVerses(String version, ReferenceList references) {
-		for (Bible bible : bibles) {
+		for (Bible bible : bibles.keySet()) {
 			if (bible.getVersion().equals(version)) {
 				return bible.getVerses(references);
 			}
@@ -94,7 +96,7 @@ public class BibleReaderModel implements MultiBibleModel {
 
 	@Override
 	public String getText(String version, Reference reference) {
-		for (Bible bible : bibles) {
+		for (Bible bible : bibles.keySet()) {
 			if (bible.getVersion().equals(version)) {
 				if (bible.getVerse(reference) != null) {
 					return bible.getVerse(reference).getText();
@@ -105,7 +107,7 @@ public class BibleReaderModel implements MultiBibleModel {
 		}
 		return "";
 	}
-	
+
 	@Override
 	public ReferenceList getReferencesForPassage(String reference) {
 		TreeSet<Reference> refsToReturn = new TreeSet<Reference>();
@@ -120,7 +122,7 @@ public class BibleReaderModel implements MultiBibleModel {
 		Matcher m = bookPattern.matcher(reference);
 
 		if (m.matches()) {
-			// It matches.  Good.
+			// It matches. Good.
 			book = BookOfBible.getBookOfBible(m.group(1));
 			if (book == null) {
 				return new ReferenceList(refsToReturn);
@@ -171,7 +173,7 @@ public class BibleReaderModel implements MultiBibleModel {
 	public ReferenceList getVerseReferences(BookOfBible book, int chapter, int verse) {
 		Reference ref = new Reference(book, chapter, verse);
 		TreeSet<Reference> refs = new TreeSet<Reference>();
-		for (Bible bible : bibles) {
+		for (Bible bible : bibles.keySet()) {
 			Verse v = bible.getVerse(ref);
 			if (v != null) {
 				refs.add(v.getReference());
@@ -183,7 +185,7 @@ public class BibleReaderModel implements MultiBibleModel {
 	@Override
 	public ReferenceList getPassageReferences(Reference startVerse, Reference endVerse) {
 		TreeSet<Reference> refs = new TreeSet<Reference>();
-		for (Bible bible : bibles) {
+		for (Bible bible : bibles.keySet()) {
 			refs.addAll(bible.getReferencesInclusive(startVerse, endVerse));
 		}
 		return new ReferenceList(refs);
@@ -192,7 +194,7 @@ public class BibleReaderModel implements MultiBibleModel {
 	@Override
 	public ReferenceList getBookReferences(BookOfBible book) {
 		TreeSet<Reference> refs = new TreeSet<Reference>();
-		for (Bible bible : bibles) {
+		for (Bible bible : bibles.keySet()) {
 			refs.addAll(bible.getReferencesForBook(book));
 		}
 		return new ReferenceList(refs);
@@ -201,7 +203,7 @@ public class BibleReaderModel implements MultiBibleModel {
 	@Override
 	public ReferenceList getChapterReferences(BookOfBible book, int chapter) {
 		TreeSet<Reference> refs = new TreeSet<Reference>();
-		for (Bible bible : bibles) {
+		for (Bible bible : bibles.keySet()) {
 			refs.addAll(bible.getReferencesForChapter(book, chapter));
 		}
 		return new ReferenceList(refs);
@@ -210,7 +212,7 @@ public class BibleReaderModel implements MultiBibleModel {
 	@Override
 	public ReferenceList getChapterReferences(BookOfBible book, int chapter1, int chapter2) {
 		TreeSet<Reference> refs = new TreeSet<Reference>();
-		for (Bible bible : bibles) {
+		for (Bible bible : bibles.keySet()) {
 			refs.addAll(bible.getReferencesForChapters(book, chapter1, chapter2));
 		}
 		return new ReferenceList(refs);
@@ -219,7 +221,7 @@ public class BibleReaderModel implements MultiBibleModel {
 	@Override
 	public ReferenceList getPassageReferences(BookOfBible book, int chapter, int verse1, int verse2) {
 		TreeSet<Reference> refs = new TreeSet<Reference>();
-		for (Bible bible : bibles) {
+		for (Bible bible : bibles.keySet()) {
 			refs.addAll(bible.getReferencesForPassage(book, chapter, verse1, verse2));
 		}
 		return new ReferenceList(refs);
@@ -228,30 +230,60 @@ public class BibleReaderModel implements MultiBibleModel {
 	@Override
 	public ReferenceList getPassageReferences(BookOfBible book, int chapter1, int verse1, int chapter2, int verse2) {
 		TreeSet<Reference> refs = new TreeSet<Reference>();
-		for (Bible bible : bibles) {
+		for (Bible bible : bibles.keySet()) {
 			refs.addAll(bible.getReferencesForPassage(book, chapter1, verse1, chapter2, verse2));
 		}
 		return new ReferenceList(refs);
 	}
 
-	// ------------------------------------------------------------------
-	// These are the better searching methods.
-	//
 	@Override
 	public ReferenceList getReferencesContainingWord(String word) {
-		// TODO Implement me: Stage 12
-		return null;
+		TreeSet<Reference> refsSet = new TreeSet<Reference>();
+		for (Bible bible : bibles.keySet()) {
+			refsSet.addAll(bibles.get(bible).getReferencesContaining(word));
+		}
+		return new ReferenceList(refsSet);
 	}
 
 	@Override
 	public ReferenceList getReferencesContainingAllWords(String words) {
-		// TODO Implement me: Stage 12
-		return null;
+		ArrayList<String> wordsList = Concordance.extractWords(words);
+		TreeSet<Reference> refsSet = new TreeSet<Reference>();
+		for (Bible bible : bibles.keySet()) {
+			refsSet.addAll(bibles.get(bible).getReferencesContainingAll(wordsList));
+		}
+		return new ReferenceList(refsSet);
 	}
 
 	@Override
 	public ReferenceList getReferencesContainingAllWordsAndPhrases(String words) {
-		// TODO Implement me: Stage 12
-		return null;
+		String input = words;
+
+		TreeSet<Reference> refsSet = new TreeSet<Reference>();
+		
+		// add phrases to an arraylist
+		ArrayList<String> phrases = new ArrayList<String>();
+		Pattern quotePattern = Pattern.compile("\"([^\"]*)\"");
+		Matcher matcher = quotePattern.matcher(words);
+		while (matcher.find()) {
+			phrases.add(matcher.group(1));
+			System.out.println(matcher.group(1));
+		}
+
+		// add references for the phrases to refsSet
+		for (String phrase : phrases) {
+			for (Bible bible : bibles.keySet()) {
+				refsSet.addAll(bibles.get(bible).getReferencesContaining(phrase));
+			}
+		}
+		input = input.replaceAll("\"([^\"]*)\"", "");
+		
+		// add references for other words to refsSet
+		ArrayList<String> otherWords = Concordance.extractWords(input);
+		for (Bible bible : bibles.keySet()) {
+			refsSet.addAll(bibles.get(bible).getReferencesContainingAll(otherWords));
+		}
+		
+		return new ReferenceList(refsSet);
 	}
 }
