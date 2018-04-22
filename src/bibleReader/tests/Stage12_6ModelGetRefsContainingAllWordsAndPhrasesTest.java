@@ -88,21 +88,21 @@ public class Stage12_6ModelGetRefsContainingAllWordsAndPhrasesTest {
 
 		results = model.getReferencesContainingAllWordsAndPhrases("godly gods god");
 		assertEquals(0, results.size());
-		
+
 		results = model.getReferencesContainingAllWordsAndPhrases("the son of god");
 		assertEquals(184, results.size());
-		
+
 		results = model.getReferencesContainingAllWordsAndPhrases("god of the son");
 		assertEquals(184, results.size());
-		
+
 		results = model.getReferencesContainingAllWordsAndPhrases("the god of son");
 		assertEquals(184, results.size());
 	}
 
 	@Test(timeout = 250)
 	public void testWithNoResultMultiplePhrases() {
-		ReferenceList results = model
-				.getReferencesContainingAllWordsAndPhrases("\"john the baptist\" \"kingdom of heaven\" \"greater than he\" \"among those\" \"I say to you\" \"hath not\"");
+		ReferenceList results = model.getReferencesContainingAllWordsAndPhrases(
+				"\"john the baptist\" \"kingdom of heaven\" \"greater than he\" \"among those\" \"I say to you\" \"hath not\"");
 		assertEquals(0, results.size());
 	}
 
@@ -121,7 +121,7 @@ public class Stage12_6ModelGetRefsContainingAllWordsAndPhrasesTest {
 		results = model.getReferencesContainingAllWordsAndPhrases("\"trust in the lord with all your heart\"");
 		assertEquals(1, results.size());
 		assertEquals(new Reference(BookOfBible.Proverbs, 3, 5), results.get(0));
-		
+
 		results = model.getReferencesContainingAllWordsAndPhrases("\"jesus wept\"");
 		assertEquals(1, results.size());
 		assertEquals(new Reference(BookOfBible.John, 11, 35), results.get(0));
@@ -129,12 +129,13 @@ public class Stage12_6ModelGetRefsContainingAllWordsAndPhrasesTest {
 
 	@Test(timeout = 250)
 	public void testWithOneResultMultiplePhrases() {
-		ReferenceList results = model.getReferencesContainingAllWordsAndPhrases("\"jesus said\" \"to him\"  \"the sons\"");
+		ReferenceList results = model
+				.getReferencesContainingAllWordsAndPhrases("\"jesus said\" \"to him\"  \"the sons\"");
 		assertEquals(1, results.size());
 		assertEquals(new Reference(BookOfBible.Matthew, 17, 26), results.get(0));
 
-		results = model
-				.getReferencesContainingAllWordsAndPhrases("\"john the baptist\" \"kingdom of heaven\" \"greater than he\" \"among those\" \"I say to you\"");
+		results = model.getReferencesContainingAllWordsAndPhrases(
+				"\"john the baptist\" \"kingdom of heaven\" \"greater than he\" \"among those\" \"I say to you\"");
 		assertEquals(1, results.size());
 		assertEquals(new Reference(BookOfBible.Matthew, 11, 11), results.get(0));
 
@@ -144,8 +145,8 @@ public class Stage12_6ModelGetRefsContainingAllWordsAndPhrasesTest {
 	public void testWithFewResultsOnePhrase() {
 		ReferenceList results = model.getReferencesContainingAllWordsAndPhrases("\"son of god\" jesus");
 		assertEquals(16, results.size());
-	}	
-	
+	}
+
 	@Test(timeout = 250)
 	public void testWithFewResultsTwoPhrases() {
 		ReferenceList results = model.getReferencesContainingAllWordsAndPhrases("\"son of god\" \"cried out\"");
@@ -216,16 +217,16 @@ public class Stage12_6ModelGetRefsContainingAllWordsAndPhrasesTest {
 
 		results = model.getReferencesContainingAllWordsAndPhrases("and \"he said\" because");
 		assertEquals(29, results.size());
-		
+
 		results = model.getReferencesContainingAllWordsAndPhrases("and \"he said\" \"because that\"");
-		assertEquals(1, results.size());	
+		assertEquals(1, results.size());
 
 		results = model.getReferencesContainingAllWordsAndPhrases("and \"he was\" \"the one\"");
 		assertEquals(4, results.size());
 
 		results = model.getReferencesContainingAllWordsAndPhrases("and \"he was\" governor \"the one\"");
 		assertEquals(1, results.size());
-		
+
 		results = model.getReferencesContainingAllWordsAndPhrases("no \"the of and or\"");
 		assertEquals(0, results.size());
 
@@ -233,9 +234,9 @@ public class Stage12_6ModelGetRefsContainingAllWordsAndPhrasesTest {
 		assertEquals(27, results.size());
 		results = model.getReferencesContainingAllWordsAndPhrases("the \"and the\" he was \"the one\"");
 		assertEquals(6, results.size());
-		
-		
+
 	}
+
 	@Test(timeout = 500)
 	public void testExtremeSearches() {
 		ReferenceList results = model.getReferencesContainingAllWordsAndPhrases("\"and he said\"");

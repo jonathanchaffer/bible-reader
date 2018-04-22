@@ -258,32 +258,45 @@ public class BibleReaderModel implements MultiBibleModel {
 	@Override
 	public ReferenceList getReferencesContainingAllWordsAndPhrases(String words) {
 		String input = words;
+		boolean thereArePhrases = false;
 
-		TreeSet<Reference> refsSet = new TreeSet<Reference>();
-		
-		// add phrases to an arraylist
+		TreeSet<Reference> refsForPhrases = new TreeSet<Reference>();
+
 		ArrayList<String> phrases = new ArrayList<String>();
 		Pattern quotePattern = Pattern.compile("\"([^\"]*)\"");
-		Matcher matcher = quotePattern.matcher(words);
-		while (matcher.find()) {
-			phrases.add(matcher.group(1));
-			System.out.println(matcher.group(1));
-		}
-
-		// add references for the phrases to refsSet
-		for (String phrase : phrases) {
-			for (Bible bible : bibles.keySet()) {
-				refsSet.addAll(bibles.get(bible).getReferencesContaining(phrase));
+		Matcher matcher = quotePattern.matcher(input);
+		if (input.matches("(.*)(\"([^\"]*)\")+(.*)")) {
+			thereArePhrases = true;
+			while (matcher.find()) {
+				phrases.add(matcher.group(1).toLowerCase());
 			}
 		}
-		input = input.replaceAll("\"([^\"]*)\"", "");
-		
-		// add references for other words to refsSet
-		ArrayList<String> otherWords = Concordance.extractWords(input);
-		for (Bible bible : bibles.keySet()) {
-			refsSet.addAll(bibles.get(bible).getReferencesContainingAll(otherWords));
+
+		ReferenceList refsForWords = getReferencesContainingAllWords(input);
+		if (!thereArePhrases) {
+			return refsForWords;
 		}
-		
-		return new ReferenceList(refsSet);
+
+		for (Bible bible : bibles.keySet()) {
+			for (Reference ref : refsForWords) {
+				int phrasesInTheVerse = 0;
+				for (String phrase : phrases) {
+					if (bible.getVerseText(ref) != null) {
+						if (bible.getVerseText(ref).matches("(?i).*(?<!\\w)" + phrase + "(?!\\w).*")) {
+							phrasesInTheVerse++;
+						}
+					}
+				}
+				if (phrasesInTheVerse == phrases.size()) {
+					refsForPhrases.add(ref);
+				}
+			}
+		}
+
+		input = input.replaceAll("\"([^\"]*)\"", "");
+
+		ArrayList<String> otherWords = Concordance.extractWords(input);
+		refsForWords.retainAll(refsForPhrases);
+		return new ReferenceList(refsForWords);
 	}
 }

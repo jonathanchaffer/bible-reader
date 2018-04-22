@@ -60,13 +60,7 @@ public class TreeMapBible implements Bible {
 
 	@Override
 	public boolean isValid(Reference ref) {
-		Set<Map.Entry<Reference, String>> entries = verses.entrySet();
-		for (Map.Entry<Reference, String> entry : entries) {
-			if (entry.getKey().equals(ref)) {
-				return true;
-			}
-		}
-		return false;
+		return verses.containsKey(ref);
 	}
 
 	@Override
@@ -79,11 +73,9 @@ public class TreeMapBible implements Bible {
 
 	@Override
 	public Verse getVerse(Reference ref) {
-		Set<Map.Entry<Reference, String>> entries = verses.entrySet();
-		for (Map.Entry<Reference, String> entry : entries) {
-			if (entry.getKey().equals(ref)) {
-				return new Verse(entry.getKey(), entry.getValue());
-			}
+		String verseText = verses.get(ref);
+		if (verseText != null) {
+			return new Verse(ref, verseText);
 		}
 		return null;
 	}

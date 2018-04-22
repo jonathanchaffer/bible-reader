@@ -1,0 +1,10 @@
+My Self-evaluation:
+-----------------------
+Time spent:    8 Hours
+-----------------------
+Expected Grade: 100/100%
+-----------------------
+Justification:
+Our code is organized and clear. It is well-documented
+and passes ALL of the tests. Our Concordance class is
+implemented correctly. Run times are fast and efficient.
